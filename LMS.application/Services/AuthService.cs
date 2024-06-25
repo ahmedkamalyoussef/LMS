@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
 using LMS.Application.Authentication;
 using LMS.Application.Helpers;
+using LMS.Application.Interfaces;
+using LMS.Application.Mail;
 using LMS.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace LMS.Application.Services
 {
-    public class AuthService
+    public class AuthService:IAuthService
     {
         #region fields
         private readonly UserManager<ApplicationUser> _userManager;
