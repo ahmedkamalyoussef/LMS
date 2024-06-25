@@ -1,6 +1,7 @@
 ﻿using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
 using LMS.Application.Mail;
+using LMS.Application.Mapper;
 using LMS.Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ namespace LMS.Application
     {
         public static IServiceCollection AddReposetoriesServices(this IServiceCollection service)
         {
+            service.AddAutoMapper(typeof(MappingProfile));
             service.AddTransient<IAuthService, AuthService>();
             service.AddTransient<IUserHelpers, UserHelpers>();
             service.AddScoped<IMailingService, MailingService>();
