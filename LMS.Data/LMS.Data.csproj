@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="IGenericRepository&amp;IUOW\" />
     <Folder Include="Configuration\" />
   </ItemGroup>
 
