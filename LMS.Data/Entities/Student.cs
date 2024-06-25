@@ -1,4 +1,5 @@
-﻿namespace LMS.Data.Entities
+﻿
+namespace LMS.Data.Entities
 {
     public class Student:ApplicationUser
     {

@@ -9,9 +9,13 @@ namespace LMS.Application.Mapper
     {
         public MappingProfile()
         {
-            CreateMap<IRegisterUser, ApplicationUser>()
+            #region Register
+            CreateMap<RegisterUser, Teacher>()
                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User));
+            CreateMap<RegisterUser, Student>()
+                   .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User));
+            #endregion
         }
-        
+
     }
 }

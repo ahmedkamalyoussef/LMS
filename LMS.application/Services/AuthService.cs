@@ -3,6 +3,7 @@ using LMS.Application.Authentication;
 using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
 using LMS.Application.Mail;
+using LMS.Data.Consts;
 using LMS.Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -57,10 +58,23 @@ namespace LMS.Application.Services
 
             }
 
-            var user = _mapper.Map<ApplicationUser>(registerUser);
+            ApplicationUser user;
+            switch (registerUser.AccountType)
+            {
+                case AccountType.Student:
+                    user = _mapper.Map<Student>(registerUser);
+                    break;
+                case AccountType.Teacher:
+                    user = _mapper.Map<Teacher>(registerUser);
+                    break;
+                default:
+                    return IdentityResult.Failed(new IdentityError { Description = "Invalid account type." });
+            }
+
             IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, registerUser.AccountType.ToString());
                 var otp = GenerateOTP();
                 user.OTP = otp;
                 user.OTPExpiry = DateTime.UtcNow.AddMinutes(15);

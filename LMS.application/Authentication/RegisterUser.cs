@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LMS.Data.Consts;
+using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Application.Authentication
 {
@@ -9,6 +10,8 @@ namespace LMS.Application.Authentication
         [Required]
         public string LastName { get; set; }
         [Required]
+        public string Govenorate { get; set; }
+        [Required]
         public string PhoneNumber { get; set; }
         [Required]
         public string Email { get; set; }
@@ -17,5 +20,7 @@ namespace LMS.Application.Authentication
         [Required]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public AccountType AccountType { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using LMS.Api;
 using LMS.Infrastructure.Data;
 using LMS.Infrastructure;
 using LMS.Application;
+using LMS.Application.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 #endregion
 
 #region Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        // Configure password options
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 8;
+        options.Password.RequiredUniqueChars = 0;
+    })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 #endregion
@@ -65,7 +75,7 @@ builder.Services.AddInfrastructureServices().
 #endregion
 
 #region mailing
-//builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));
 builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
 #endregion
 
