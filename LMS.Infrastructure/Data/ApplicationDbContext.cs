@@ -1,5 +1,6 @@
 ﻿using LMS.Data.Consts;
 using LMS.Data.Entities;
+using LMS.Domain.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,14 @@ namespace LMS.Infrastructure.Data
             modelBuilder.Entity<Teacher>().ToTable("Teacher");
             modelBuilder.Entity<Student>().ToTable("Student");
             modelBuilder.Entity<Admin>().ToTable("Admin");
+
+            #region Student
+            new StudentEntityTypeConfiguration().Configure(modelBuilder.Entity<Student>());
+            #endregion
+
+            #region Teacher
+            new TeacherEntityTypeConfiguration().Configure(modelBuilder.Entity<Teacher>());
+            #endregion
 
             SeedRoles(modelBuilder);
 
