@@ -12,34 +12,21 @@ using System.Text;
 
 namespace LMS.Application.Services
 {
-    public class AuthService:IAuthService
+    public class AuthService(
+        UserManager<ApplicationUser> userManager, IMapper mapper,
+        IUserHelpers userHelpers,
+        IMailingService mailingService,
+        SignInManager<ApplicationUser> signInManager,
+        IHttpContextAccessor httpContextAccessor
+            ) : IAuthService
     {
         #region fields
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IMapper _mapper;
-        private readonly IUserHelpers _userHelpers;
-        private readonly IMailingService _mailingService;
-        private SignInManager<ApplicationUser> _signInManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        #endregion
-
-        #region ctor
-        public AuthService(
-            UserManager<ApplicationUser> userManager, IMapper mapper,
-            IUserHelpers userHelpers,
-            IMailingService mailingService,
-            SignInManager<ApplicationUser> signInManager,
-            IHttpContextAccessor httpContextAccessor
-            )
-        {
-            _userManager = userManager;
-            _mapper = mapper;
-            _userHelpers = userHelpers;
-            _mailingService = mailingService;
-            _signInManager = signInManager;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly IMapper _mapper = mapper;
+        private readonly IUserHelpers _userHelpers = userHelpers;
+        private readonly IMailingService _mailingService = mailingService;
+        private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         #endregion
 
         #region Registration
@@ -54,27 +41,25 @@ namespace LMS.Application.Services
                     await SendOTPAsync(userExist.Email);
                     return IdentityResult.Success;
                 }
-                throw new Exception("user already exist");
-
+                return IdentityResult.Failed(new IdentityError { Description = "User already exists" });
             }
 
-            ApplicationUser user;
-            switch (registerUser.AccountType)
+            ApplicationUser user = registerUser.AccountType switch
             {
-                case AccountType.Student:
-                    user = _mapper.Map<Student>(registerUser);
-                    break;
-                case AccountType.Teacher:
-                    user = _mapper.Map<Teacher>(registerUser);
-                    break;
-                default:
-                    return IdentityResult.Failed(new IdentityError { Description = "Invalid account type." });
+                AccountType.Student => _mapper.Map<Student>(registerUser),
+                AccountType.Teacher => _mapper.Map<Teacher>(registerUser),
+            };
+
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Invalid account type." });
             }
 
             IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, registerUser.AccountType.ToString());
+
                 var otp = GenerateOTP();
                 user.OTP = otp;
                 user.OTPExpiry = DateTime.UtcNow.AddMinutes(15);
@@ -83,8 +68,10 @@ namespace LMS.Application.Services
                 var message = new MailMessage(new[] { user.Email }, "Your OTP for Email Confirmation", $"Your OTP is: {otp}");
                 _mailingService.SendMail(message);
             }
+
             return result;
         }
+
 
 
         #endregion
@@ -106,8 +93,6 @@ namespace LMS.Application.Services
                     return new AuthModel { Message = "user not confirmed" };
                 }
 
-
-
                 authModel.Message = $"Welcome Back, {user.FirstName}";
                 authModel.UserName = user.UserName;
                 authModel.Email = user.Email;
@@ -115,7 +100,6 @@ namespace LMS.Application.Services
 
                 authModel.IsAuthenticated = true;
                 authModel.Roles = [.. (await _userManager.GetRolesAsync(user))];
-
 
                 if (user.RefreshTokens.Any(a => a.IsActive))
                 {
@@ -138,7 +122,6 @@ namespace LMS.Application.Services
                 return new AuthModel { Message = "Invalid Authentication", Errors = new List<string> { ex.Message } };
             }
         }
-
         #endregion
 
         #region logout

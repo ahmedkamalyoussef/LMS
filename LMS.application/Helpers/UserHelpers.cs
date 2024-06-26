@@ -10,25 +10,18 @@ using System.Text;
 
 namespace LMS.Application.Helpers
 {
-    internal class UserHelpers : IUserHelpers
+    internal class UserHelpers(IConfiguration config, UserManager<ApplicationUser> userManager
+            , IHttpContextAccessor contextAccessor
+            , IWebHostEnvironment webHostEnvironment) : IUserHelpers
     {
         #region fields
-        private IWebHostEnvironment _webHostEnvironment;
-        private readonly IConfiguration _config;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IHttpContextAccessor _contextAccessor;
-        #endregion
+        private IWebHostEnvironment _webHostEnvironment = webHostEnvironment;
+        private readonly IConfiguration _config = config;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+        private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
 
+        #endregion
         #region ctor
-        public UserHelpers(IConfiguration config, UserManager<ApplicationUser> userManager
-            , IHttpContextAccessor contextAccessor
-            , IWebHostEnvironment webHostEnvironment)
-        {
-            _config = config;
-            _userManager = userManager;
-            _contextAccessor = contextAccessor;
-            _webHostEnvironment = webHostEnvironment;
-        }
         #endregion
 
         #region methods
@@ -40,19 +33,15 @@ namespace LMS.Application.Helpers
 
         public async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
-
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
             var roles = await _userManager.GetRolesAsync(user);
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Secret"]));
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
