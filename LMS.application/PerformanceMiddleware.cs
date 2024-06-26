@@ -1,6 +1,8 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
-namespace LMS.Api
+namespace LMS.Application
 {
     public class PerformanceMiddleware
     {

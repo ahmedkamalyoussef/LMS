@@ -1,15 +1,10 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using LMS.Data.Entities;
 using Microsoft.OpenApi.Models;
 using LMS.Api;
-using LMS.Infrastructure.Data;
 using LMS.Infrastructure;
 using LMS.Application;
 using LMS.Application.Mail;
+using LMS.Application.Extentions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,60 +15,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-#region Connection String
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-#endregion
+builder.Services.AddInfrastructureServices().AddReposetoriesServices();
 
-#region Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-    {
-        // Configure password options
-        options.Password.RequireDigit = false;
-        options.Password.RequireLowercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequiredLength = 8;
-        options.Password.RequiredUniqueChars = 0;
-    })
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
-#endregion
+builder.Services.ConfigureDbContext(builder.Configuration);
 
-#region Add Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
-}
-    ).AddJwtBearer(o =>
-    {
-        o.IncludeErrorDetails = true;
-        o.RequireHttpsMetadata = false;
-        o.SaveToken = false;
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            ValidateAudience = true,
-            ValidateIssuer = true,
-            ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"])),
-            ClockSkew = TimeSpan.Zero
-        };
-    });
-#endregion
+builder.Services.ConfigureIdentity();
 
-#region Dependency Injection
-builder.Services.AddInfrastructureServices().
-    AddReposetoriesServices();
-#endregion
-
+builder.Services.ConfigureAuthentication(builder.Configuration);
+//
 #region mailing
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));
 builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
@@ -121,17 +70,7 @@ builder.Services.AddSwaggerGen(swagger =>
 });
 #endregion
 
-#region Cors policy
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("CorsPolicy", builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-});
-#endregion
+builder.Services.ConfigureCors();
 
 var app = builder.Build();
 
@@ -142,16 +81,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-
-app.UseAuthorization();
-
-app.UseMiddleware<PerformanceMiddleware>();
-
-app.MapControllers();
-
-app.UseCors("CorsPolicy");
-
+app.UseCustomMiddlewares();
 app.Run();

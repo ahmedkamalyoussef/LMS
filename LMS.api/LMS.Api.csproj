@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LMS.application\LMS.Application.csproj" />
-    <ProjectReference Include="..\LMS.Data\LMS.Data.csproj" />
+    <ProjectReference Include="..\LMS.Data\LMS.Domain.csproj" />
     <ProjectReference Include="..\LMS.Infrastructure\LMS.Infrastructure.csproj" />
   </ItemGroup>
 
