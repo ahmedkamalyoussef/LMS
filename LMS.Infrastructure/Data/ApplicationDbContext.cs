@@ -12,6 +12,8 @@ namespace LMS.Infrastructure.Data
         public DbSet<Teacher> Teacher { get; set; }
         public DbSet<Student> Student { get; set; }
         public DbSet<Admin> Admin { get; set; }
+        public DbSet<Course> Course { get; set; }
+        public DbSet<StudentCourse> StudentCourse { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,12 @@ namespace LMS.Infrastructure.Data
 
             #region Teacher
             new TeacherEntityTypeConfiguration().Configure(modelBuilder.Entity<Teacher>());
+            #endregion
+            #region Course
+            new CourseEntityTypeConfiguration().Configure(modelBuilder.Entity<Course>());
+            #endregion
+            #region StudentCourse
+            new StudentCourseEntityTypeConfiguration().Configure(modelBuilder.Entity<StudentCourse>());
             #endregion
 
             SeedRoles(modelBuilder);
