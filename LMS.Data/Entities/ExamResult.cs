@@ -7,6 +7,5 @@
         public string ExamId { get; set; }
         public Exam Exam { get; set; }
         public double Result { get; set; }
-
     }
 }
