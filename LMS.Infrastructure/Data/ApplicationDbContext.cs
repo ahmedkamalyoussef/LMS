@@ -1,6 +1,7 @@
 ﻿using LMS.Data.Consts;
 using LMS.Data.Entities;
 using LMS.Domain.Configuration;
+using LMS.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +31,41 @@ namespace LMS.Infrastructure.Data
             #region Teacher
             new TeacherEntityTypeConfiguration().Configure(modelBuilder.Entity<Teacher>());
             #endregion
+
             #region Course
             new CourseEntityTypeConfiguration().Configure(modelBuilder.Entity<Course>());
             #endregion
+
             #region StudentCourse
             new StudentCourseEntityTypeConfiguration().Configure(modelBuilder.Entity<StudentCourse>());
+            #endregion
+
+            #region Exam
+            new ExamEntityTypeConfiguration().Configure(modelBuilder.Entity<Exam>());
+            #endregion
+
+            #region Exam Result 
+            new ExamResultEntityTypeConfiguration().Configure(modelBuilder.Entity<ExamResult>());
+            #endregion
+
+            #region Book
+            new BookEntityTypeConfiguration().Configure(modelBuilder.Entity<Book>());
+            #endregion
+
+            #region Answer
+            new AnswerEntityTypeConfiguration().Configure(modelBuilder.Entity<Answer>());
+            #endregion
+
+            #region Evaluation
+            new EvaluationEntityTypeConfiguration().Configure(modelBuilder.Entity<Evaluation>());
+            #endregion
+
+            #region Lecture
+            new LectureEntityTypeConfiguration().Configure(modelBuilder.Entity<Lecture>());
+            #endregion
+
+            #region Question
+            new QuestionEntityTypeConfiguration().Configure(modelBuilder.Entity<Question>());
             #endregion
 
             SeedRoles(modelBuilder);

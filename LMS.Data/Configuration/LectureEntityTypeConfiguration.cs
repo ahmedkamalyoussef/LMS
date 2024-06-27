@@ -8,6 +8,11 @@ namespace LMS.Domain.Configuration
     {
         public void Configure(EntityTypeBuilder<Lecture> builder)
         {
+            builder
+                .HasOne(l => l.Course)
+                .WithMany(c => c.Lectures)
+                .HasForeignKey(l => l.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

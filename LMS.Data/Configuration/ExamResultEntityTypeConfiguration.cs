@@ -8,6 +8,18 @@ namespace LMS.Domain.Configuration
     {
         public void Configure(EntityTypeBuilder<ExamResult> builder)
         {
+            builder.HasKey(sc => new { sc.StudentId, sc.ExamId });
+
+            builder
+                .HasOne(exr => exr.Student)
+                .WithMany(s => s.ExamResults)
+                .HasForeignKey(exr => exr.StudentId)
+                .OnDelete(DeleteBehavior.NoAction);
+            builder
+                .HasOne(exr => exr.Exam)
+                .WithMany(e => e.ExamResults)
+                .HasForeignKey(exr => exr.ExamId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

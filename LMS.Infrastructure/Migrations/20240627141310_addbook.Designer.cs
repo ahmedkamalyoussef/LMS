@@ -4,6 +4,7 @@ using LMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240627141310_addbook")]
+    partial class addbook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,107 +168,6 @@ namespace LMS.Infrastructure.Migrations
                     b.ToTable("Course");
                 });
 
-            modelBuilder.Entity("LMS.Data.Entities.Evaluation", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CourseId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Evaluation");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Exam", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CourseId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Exam");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.ExamResult", b =>
-                {
-                    b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ExamId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Result")
-                        .HasColumnType("float");
-
-                    b.HasKey("StudentId", "ExamId");
-
-                    b.HasIndex("ExamId");
-
-                    b.ToTable("ExamResult");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Lecture", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CourseId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LectureUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.ToTable("Lecture");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Question", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CorrectAnswer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExamId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExamId");
-
-                    b.ToTable("Question");
-                });
-
             modelBuilder.Entity("LMS.Data.Entities.StudentCourse", b =>
                 {
                     b.Property<string>("StudentId")
@@ -279,26 +181,6 @@ namespace LMS.Infrastructure.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("StudentCourse");
-                });
-
-            modelBuilder.Entity("LMS.Domain.Entities.Answer", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("QuestionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("Answer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -540,69 +422,6 @@ namespace LMS.Infrastructure.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("LMS.Data.Entities.Evaluation", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Course", "Course")
-                        .WithMany("Evaluations")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Exam", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Course", "Course")
-                        .WithMany("Exams")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.ExamResult", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Exam", "Exam")
-                        .WithMany("ExamResults")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMS.Data.Entities.Student", "Student")
-                        .WithMany("ExamResults")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Lecture", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Course", "Course")
-                        .WithMany("Lectures")
-                        .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Question", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Exam", "Exam")
-                        .WithMany("Questions")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-                });
-
             modelBuilder.Entity("LMS.Data.Entities.StudentCourse", b =>
                 {
                     b.HasOne("LMS.Data.Entities.Course", "Course")
@@ -620,17 +439,6 @@ namespace LMS.Infrastructure.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("LMS.Domain.Entities.Answer", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Question", "Question")
-                        .WithMany("Answers")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -715,31 +523,11 @@ namespace LMS.Infrastructure.Migrations
                 {
                     b.Navigation("Books");
 
-                    b.Navigation("Evaluations");
-
-                    b.Navigation("Exams");
-
-                    b.Navigation("Lectures");
-
                     b.Navigation("StudentCourses");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Exam", b =>
-                {
-                    b.Navigation("ExamResults");
-
-                    b.Navigation("Questions");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.Question", b =>
-                {
-                    b.Navigation("Answers");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Student", b =>
                 {
-                    b.Navigation("ExamResults");
-
                     b.Navigation("StudentCourses");
                 });
 

@@ -4,6 +4,7 @@ using LMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240627144340_questions")]
+    partial class questions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,24 +205,6 @@ namespace LMS.Infrastructure.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Exam");
-                });
-
-            modelBuilder.Entity("LMS.Data.Entities.ExamResult", b =>
-                {
-                    b.Property<string>("StudentId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ExamId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Result")
-                        .HasColumnType("float");
-
-                    b.HasKey("StudentId", "ExamId");
-
-                    b.HasIndex("ExamId");
-
-                    b.ToTable("ExamResult");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Lecture", b =>
@@ -562,25 +547,6 @@ namespace LMS.Infrastructure.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("LMS.Data.Entities.ExamResult", b =>
-                {
-                    b.HasOne("LMS.Data.Entities.Exam", "Exam")
-                        .WithMany("ExamResults")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LMS.Data.Entities.Student", "Student")
-                        .WithMany("ExamResults")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("LMS.Data.Entities.Lecture", b =>
                 {
                     b.HasOne("LMS.Data.Entities.Course", "Course")
@@ -726,8 +692,6 @@ namespace LMS.Infrastructure.Migrations
 
             modelBuilder.Entity("LMS.Data.Entities.Exam", b =>
                 {
-                    b.Navigation("ExamResults");
-
                     b.Navigation("Questions");
                 });
 
@@ -738,8 +702,6 @@ namespace LMS.Infrastructure.Migrations
 
             modelBuilder.Entity("LMS.Data.Entities.Student", b =>
                 {
-                    b.Navigation("ExamResults");
-
                     b.Navigation("StudentCourses");
                 });
 
