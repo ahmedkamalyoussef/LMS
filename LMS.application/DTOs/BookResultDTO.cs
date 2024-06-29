@@ -1,6 +1,6 @@
 ﻿namespace LMS.Application.DTOs
 {
-    public class BookResultDTO
+    public class LectureDtoResultDTO
     {
         public string Id { get; set; }
         public string Title { get; set; }

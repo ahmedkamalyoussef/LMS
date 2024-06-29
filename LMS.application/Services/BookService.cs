@@ -29,17 +29,17 @@ namespace LMS.Application.Services
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<BookResultDTO> GetBook(string id)
+        public async Task<LectureDtoResultDTO> GetBook(string id)
         {
             var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("book not found");
-            var bookResult = _mapper.Map<BookResultDTO>(book);
+            var bookResult = _mapper.Map<LectureDtoResultDTO>(book);
             return bookResult;
         }
 
-        public async Task<List<BookResultDTO>> GetCourseBooks(string courseId)
+        public async Task<List<LectureDtoResultDTO>> GetCourseBooks(string courseId)
         {
             var books = await _unitOfWork.Books.FindAsync(b => b.CourseId == courseId);
-            var coursesResult = _mapper.Map<IEnumerable<BookResultDTO>>(books).ToList();
+            var coursesResult = _mapper.Map<IEnumerable<LectureDtoResultDTO>>(books).ToList();
             return coursesResult;
         }
 

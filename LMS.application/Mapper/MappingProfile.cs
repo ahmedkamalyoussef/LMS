@@ -30,7 +30,7 @@ namespace LMS.Application.Mapper
             #region Book
             CreateMap<BookDTO, Book>();
             CreateMap<EditBookDTO, Book>();
-            CreateMap<Book, BookResultDTO>();
+            CreateMap<Book, LectureDtoResultDTO>();
             #endregion
 
             #region Lecture
