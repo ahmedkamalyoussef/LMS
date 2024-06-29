@@ -17,6 +17,7 @@ namespace LMS.Application
             service.AddTransient<ICourseService, CourseService>();
             service.AddTransient<IUserHelpers, UserHelpers>();
             service.AddTransient<IBookService, BookService>();
+            service.AddTransient<ILectureService, LectureService>();
             service.AddTransient<IMailingService, MailingService>();
             service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             return service;
