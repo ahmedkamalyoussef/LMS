@@ -25,7 +25,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
             await _context.Set<T>().AddRangeAsync(entities);
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null, string direction = null)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
         {
             IQueryable<T> query = _context.Set<T>().Where(expression);
 
@@ -36,16 +36,30 @@ namespace LMS.Infrastructure.GenericRepository_UOW
                 else
                     query = query.OrderByDescending(orderBy);
             }
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include.ToString());
 
             return await query.ToListAsync();
         }
 
-        public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression)
+        public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression, List<Expression<Func<T, object>>> includes = null)
         {
-            return await _context.Set<T>().FirstOrDefaultAsync(expression);
+            IQueryable<T> query = _context.Set<T>();
+
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(expression);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null, string direction = null)
+
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
 
@@ -56,14 +70,17 @@ namespace LMS.Infrastructure.GenericRepository_UOW
                 else
                     query = query.OrderByDescending(orderBy);
             }
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
 
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(string id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
+        //public async Task<T> GetByIdAsync(string id, List<Expression<Func<T, object>>> includes = null)
+        //{
+        //    return await _context.Set<T>().FindAsync(id);
+        //}
 
         public async Task UpdateAsync(T entity)
         {

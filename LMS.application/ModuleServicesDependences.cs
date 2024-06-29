@@ -14,6 +14,7 @@ namespace LMS.Application
         {
             service.AddAutoMapper(typeof(MappingProfile));
             service.AddTransient<IAuthService, AuthService>();
+            service.AddTransient<ICourseService, CourseService>();
             service.AddTransient<IUserHelpers, UserHelpers>();
             service.AddScoped<IMailingService, MailingService>();
             service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
