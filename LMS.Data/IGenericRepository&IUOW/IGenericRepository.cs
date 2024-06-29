@@ -4,7 +4,6 @@ namespace LMS.Data.IGenericRepository_IUOW
 {
     public interface IGenericRepository<T> where T : class
     {
-        //Task<T> GetByIdAsync(string id, List<Expression<Func<T, object>>> includes = null);
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null);
         Task AddAsync(T entity);
         Task AddRangeAsync(IEnumerable<T> entities);

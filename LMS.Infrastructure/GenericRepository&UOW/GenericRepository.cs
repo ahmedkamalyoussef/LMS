@@ -38,7 +38,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
             }
             if (includes != null)
                 foreach (var include in includes)
-                    query = query.Include(include.ToString());
+                    query = query.Include(include);
 
             return await query.ToListAsync();
         }
@@ -77,28 +77,20 @@ namespace LMS.Infrastructure.GenericRepository_UOW
             return await query.ToListAsync();
         }
 
-        //public async Task<T> GetByIdAsync(string id, List<Expression<Func<T, object>>> includes = null)
-        //{
-        //    return await _context.Set<T>().FindAsync(id);
-        //}
-
         public async Task UpdateAsync(T entity)
         {
             _context.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
         }
 
         public async Task RemoveRangeAsync(IEnumerable<T> entities)
         {
             _context.Set<T>().RemoveRange(entities);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<int> CountAsync()

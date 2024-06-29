@@ -7,6 +7,5 @@
         public string? Image { get; set; }
         public string Level { get; set; }
         public string Semester { get; set; }
-        public string TeacherId { get; set; }
     }
 }

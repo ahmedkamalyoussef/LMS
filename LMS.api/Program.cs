@@ -15,13 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddInfrastructureServices().AddReposetoriesServices();
 
 builder.Services.ConfigureDbContext(builder.Configuration);
 
 builder.Services.ConfigureIdentity();
 
 builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.AddInfrastructureServices().AddReposetoriesServices();
 //
 #region mailing
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));

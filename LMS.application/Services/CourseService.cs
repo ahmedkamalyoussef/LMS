@@ -16,10 +16,11 @@ namespace LMS.Application.Services
 
         public async Task<bool> CreateCourse(CourseDTO courseDto)
         {
-            _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
+            var teacher = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var course = _mapper.Map<Course>(courseDto);
+            course.TeacherId = teacher.Id;
             await _unitOfWork.Courses.AddAsync(course);
-            return await _unitOfWork.SaveAsync()>0;
+            return await _unitOfWork.SaveAsync() > 0;
         }
         public async Task<bool> UpdateCourse(string id, CourseDTO courseDTO)
         {
@@ -45,6 +46,7 @@ namespace LMS.Application.Services
             if (currentUser.Id != course.TeacherId)
                 throw new Exception("course not found");
             var newStudentCourse =new StudentCourse { CourseId =course.Id,StudentId=student.Id};
+            await _unitOfWork.StudentCourses.AddAsync(newStudentCourse);
             return await _unitOfWork.SaveAsync() > 0;
 
         }
@@ -79,7 +81,7 @@ namespace LMS.Application.Services
             direction: OrderDirection.Ascending,
             includes:
             [
-                course => course.Teacher
+                c=> c.Teacher
             ]);
             var coursesResult = _mapper.Map<IEnumerable<CourseResultDTO>>(courses).ToList();
             return coursesResult;
@@ -95,6 +97,19 @@ namespace LMS.Application.Services
             var studentCourses = await _unitOfWork.StudentCourses.FindAsync(sc => sc.CourseId == courseId);
             return studentCourses.Count();
         }
- 
+
+        public async Task<List<CourseResultDTO>> SearchForCources(string crateria)
+        {
+            var courses = await _unitOfWork.Courses.FindAsync(c => c.MaterialName.Contains(crateria)||c.Name.Contains(crateria)||c.Semester.Contains(crateria)||c.Teacher.FirstName.Contains(crateria)||c.Teacher.LastName.Contains(crateria)
+            ||crateria.Contains(c.MaterialName) || crateria.Contains(c.Name) || crateria.Contains(c.Semester) || crateria.Contains(c.Teacher.FirstName) || crateria.Contains(c.Teacher.LastName),
+            orderBy: course => course.Name,
+            direction: OrderDirection.Ascending,
+            includes:
+            [
+                c => c.Teacher
+            ]);
+            var coursesResult = _mapper.Map<IEnumerable<CourseResultDTO>>(courses).ToList();
+            return coursesResult;
+        }
     }
 }
