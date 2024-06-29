@@ -2,6 +2,7 @@
 using LMS.Application.DTOs;
 using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
+using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
 
 namespace LMS.Application.Services
@@ -12,34 +13,49 @@ namespace LMS.Application.Services
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
 
-        public Task<bool> CreateBook(BookDTO book)
+        public async Task<bool> CreateBook(BookDTO bookDto)
         {
-            throw new NotImplementedException();
+            _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
+            var book = _mapper.Map<Book>(bookDto);
+            await _unitOfWork.Books.AddAsync(book);
+            return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public Task<bool> DeleteBook(string id)
+        public async Task<bool> DeleteBook(string id)
         {
-            throw new NotImplementedException();
+            _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
+            var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("book not found");
+            await _unitOfWork.Books.RemoveAsync(book);
+            return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public Task<BookResultDTO> GetBook(string id)
+        public async Task<BookResultDTO> GetBook(string id)
         {
-            throw new NotImplementedException();
+            var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("book not found");
+            var bookResult = _mapper.Map<BookResultDTO>(book);
+            return bookResult;
         }
 
-        public Task<List<BookResultDTO>> GetCourseBooks(string courseId)
+        public async Task<List<BookResultDTO>> GetCourseBooks(string courseId)
         {
-            throw new NotImplementedException();
+            var books = await _unitOfWork.Books.FindAsync(b => b.CourseId == courseId);
+            var coursesResult = _mapper.Map<IEnumerable<BookResultDTO>>(books).ToList();
+            return coursesResult;
         }
 
-        public Task<int> GetNumberOfBooksInCourse()
+        public async Task<int> GetNumberOfBooksInCourse(string courseId)
         {
-            throw new NotImplementedException();
+            var books = await _unitOfWork.Books.FindAsync(sc => sc.CourseId == courseId);
+            return books.Count();
         }
 
-        public Task<bool> UpdateBook(string id, BookDTO book)
+        public async Task<bool> UpdateBook(string id, EditBookDTO bookDto)
         {
-            throw new NotImplementedException();
+            _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
+            var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
+            _mapper.Map(bookDto, book);
+            await _unitOfWork.Books.UpdateAsync(book);
+            return await _unitOfWork.SaveAsync() > 0;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace LMS.Api.Controllers
                 return BadRequest(ModelState);
 
             var result = await _courseService.CreateCourse(courseDto);
-            return result ? Ok("created Sucsessfully") : BadRequest(ModelState);
+            return result ? Ok("created successfully") : BadRequest("failed to create");
         }
         [Authorize(Roles = $"${ConstRoles.Teacher}")]
         [HttpPut]
@@ -30,7 +30,7 @@ namespace LMS.Api.Controllers
                 return BadRequest(ModelState);
 
             var result = await _courseService.UpdateCourse(id, courseDto);
-            return result ? Ok("updated Sucsessfully") : BadRequest("failed to update");
+            return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }
         [Authorize(Roles = $"${ConstRoles.Teacher}")]
@@ -39,7 +39,7 @@ namespace LMS.Api.Controllers
         public async Task<IActionResult> DeleteCourse(string id)
         {
             var result = await _courseService.DeleteCourse(id);
-            return result ? Ok("deleted Sucsessfully") : BadRequest("failed to delete");
+            return result ? Ok("deleted successfully") : BadRequest("failed to delete");
 
         }
         [Authorize(Roles = $"${ConstRoles.Admin}")]
@@ -47,7 +47,7 @@ namespace LMS.Api.Controllers
         public async Task<IActionResult> EnrollStudentInCourse(string studentEmail,string courseCode)
         {
             var result = await _courseService.EnrollingStudentInCourse(studentEmail, courseCode);
-            return result ? Ok("student has been added Sucsessfully") : BadRequest("failed to add student");
+            return result ? Ok("student has been added successfully") : BadRequest("failed to add student");
 
         }
         [Authorize]
