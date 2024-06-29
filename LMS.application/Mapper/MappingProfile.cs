@@ -17,14 +17,19 @@ namespace LMS.Application.Mapper
                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User));
             #endregion
 
+            #region Teacher & student
+            CreateMap<Teacher, TeacherResultDTO>();
+            CreateMap<Student, StudenResultDTO>();
+            #endregion
+
             #region Course
             CreateMap<CourseDTO, Course>();
             CreateMap<Course, CourseResultDTO>();
             #endregion
 
-            #region Teacher & student
-            CreateMap<Teacher, TeacherResultDTO>();
-            CreateMap<Student, StudenResultDTO>();
+            #region Book
+            CreateMap<BookDTO, Book>();
+            CreateMap<Book, BookResultDTO>();
             #endregion
         }
 
