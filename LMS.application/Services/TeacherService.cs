@@ -1,20 +1,33 @@
-﻿using AutoMapper;
-using LMS.Application.Helpers;
+﻿using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
+using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
 
 namespace LMS.Application.Services
 {
-    public class TeacherService(IUnitOfWork unitOfWork, IMapper mapper, IUserHelpers userHelpers : ITeacherService
+    public class TeacherService(IUnitOfWork unitOfWork, IUserHelpers userHelpers) : ITeacherService
     {
 
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
 
-        public Task<bool> EditTeacherImage(string imagePath)
+
+        public async Task<bool> DeleteTeacherPictureAsync()
         {
-            throw new NotImplementedException();
+            Teacher user = (Teacher) await _userHelpers.GetCurrentUserAsync();
+            if (user == null) return false;
+            user.Image = null;
+            await _unitOfWork.Users.UpdateAsync(user);
+            return await _unitOfWork.SaveAsync() > 0;
+        }
+
+        public async Task<bool> EditTeacherImage(string imagePath)
+        {
+            Teacher user = (Teacher) await _userHelpers.GetCurrentUserAsync();
+            if (user == null) return false;
+            user.Image = imagePath;
+            await _unitOfWork.Users.UpdateAsync(user);
+            return await _unitOfWork.SaveAsync() > 0;
         }
 
         public async Task<int> GetTeachersCount()

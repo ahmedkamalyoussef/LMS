@@ -22,6 +22,8 @@ namespace LMS.Api.Controllers
             var result = await _courseService.CreateCourse(courseDto);
             return result ? Ok("created successfully") : BadRequest("failed to create");
         }
+
+
         [Authorize(Roles = $"${ConstRoles.Teacher}")]
         [HttpPut]
         public async Task<IActionResult> UpdateCourse(string id, CourseDTO courseDto)
@@ -33,8 +35,9 @@ namespace LMS.Api.Controllers
             return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }
-        [Authorize(Roles = $"${ConstRoles.Teacher}")]
 
+
+        [Authorize(Roles = $"${ConstRoles.Teacher}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteCourse(string id)
         {
@@ -42,6 +45,8 @@ namespace LMS.Api.Controllers
             return result ? Ok("deleted successfully") : BadRequest("failed to delete");
 
         }
+
+
         [Authorize(Roles = $"${ConstRoles.Admin}")]
         [HttpPost("enroll")]
         public async Task<IActionResult> EnrollStudentInCourse(string studentEmail,string courseCode)
@@ -50,20 +55,24 @@ namespace LMS.Api.Controllers
             return result ? Ok("student has been added successfully") : BadRequest("failed to add student");
 
         }
+
+
         [Authorize]
         [HttpGet("all")]
         public async Task<IActionResult> GetAllCourses()
         {
-            var courses = await _courseService.GetAllCourses();
-            return Ok(courses);
+            return Ok(await _courseService.GetAllCourses());
         }
+
+
         [Authorize]
         [HttpGet("search")]
         public async Task<IActionResult> GetCoursesByCrateria(string carteria)
         {
-            var courses = await _courseService.SearchForCources(carteria);
-            return Ok(courses);
+            return Ok(await _courseService.SearchForCources(carteria));
         }
+
+
         [Authorize]
         [HttpGet("by-id")]
         public async Task<IActionResult> GetCourse(string id)
@@ -71,26 +80,29 @@ namespace LMS.Api.Controllers
             var course = await _courseService.GetCourse(id);
             return course != null ?  Ok(course) : throw new Exception("course not found") ;
         }
+
+
         [Authorize]
         [HttpGet("teacher-courses")]
         public async Task<IActionResult> GetCoursesByTeacherId(string teacherId)
         {
-            var courses = await _courseService.GetCoursesByTeacherId(teacherId);
-            return Ok(courses);
+            return Ok(await _courseService.GetCoursesByTeacherId(teacherId));
         }
+
+
         [Authorize]
         [HttpGet("count")]
         public async Task<IActionResult> GetNumberOfCourses()
         {
-            var count = await _courseService.GetNumberOfCourses();
-            return Ok(count);
+            return Ok(await _courseService.GetNumberOfCourses());
         }
+
+
         [Authorize]
         [HttpGet("students-count-in-course")]
         public async Task<IActionResult> GetStudentCountInCourse(string courseId)
         {
-            var count = await _courseService.GetStudentCountInCourse(courseId);
-            return Ok(count);
+            return Ok(await _courseService.GetStudentCountInCourse(courseId));
         }
     }
 }
