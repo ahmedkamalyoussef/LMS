@@ -50,8 +50,7 @@ namespace LMS.Api.Controllers
         [HttpGet("all-in-course")]
         public async Task<IActionResult> GetCourseBooks(string courseId)
         {
-            var courses = await _bookService.GetCourseBooks(courseId);
-            return Ok(courses);
+            return Ok(await _bookService.GetCourseBooks(courseId));
         }
 
         [Authorize]
@@ -67,8 +66,7 @@ namespace LMS.Api.Controllers
         [HttpGet("num-of-books")]
         public async Task<IActionResult> GetnumberOfBooksInCourse(string courseId)
         {
-            var courses = await _bookService.GetNumberOfBooksInCourse(courseId);
-            return Ok(courses);
+            return Ok(await _bookService.GetNumberOfBooksInCourse(courseId));
         }
     }
 }

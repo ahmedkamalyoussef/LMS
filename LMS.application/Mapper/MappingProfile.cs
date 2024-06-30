@@ -49,13 +49,13 @@ namespace LMS.Application.Mapper
 
             #region question
             CreateMap<QuestionDTO, Question>();
-            CreateMap<QuestionResultDTO, Question>();
+            CreateMap<EditQuestionDTO, Question>();
             CreateMap<Question, QuestionResultDTO>();
             #endregion
 
             #region answer
             CreateMap<AnswerDTO, Answer>();
-            CreateMap<AnswerResultDTO, Answer>();
+            CreateMap<EditAnswerDTO, Answer>();
             CreateMap<Answer, AnswerResultDTO>();
             #endregion
         }
