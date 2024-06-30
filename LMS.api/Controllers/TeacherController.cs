@@ -18,7 +18,7 @@ namespace LMS.Api.Controllers
             return Ok(await _teacherService.GetTeachersCount());
         }
 
-        [Authorize(Roles = $"${ConstRoles.Teacher}")]
+        [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
         public async Task<IActionResult> UpdateImage(string newImagePath)
         {
@@ -28,7 +28,7 @@ namespace LMS.Api.Controllers
         }
 
 
-        [Authorize(Roles = $"${ConstRoles.Teacher}")]
+        [Authorize(Roles = ConstRoles.Teacher)]
         [HttpDelete]
         public async Task<IActionResult> DeleteImage()
         {

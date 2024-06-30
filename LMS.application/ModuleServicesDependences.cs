@@ -15,6 +15,9 @@ namespace LMS.Application
             service.AddAutoMapper(typeof(MappingProfile));
             service.AddTransient<IAuthService, AuthService>();
             service.AddTransient<ICourseService, CourseService>();
+            service.AddTransient<IStudentService, StudentService>();
+            service.AddTransient<ITeacherService, TeacherService>();
+            service.AddTransient<IExamService, ExamService>();
             service.AddTransient<IUserHelpers, UserHelpers>();
             service.AddTransient<IBookService, BookService>();
             service.AddTransient<ILectureService, LectureService>();
