@@ -2,6 +2,7 @@
 using LMS.Application.Authentication;
 using LMS.Application.DTOs;
 using LMS.Data.Entities;
+using LMS.Domain.Entities;
 using System.Net.Mail;
 
 namespace LMS.Application.Mapper
@@ -39,7 +40,21 @@ namespace LMS.Application.Mapper
             CreateMap<EditLectureDTO, Lecture>();
             CreateMap<Lecture, LectureResultDTO>();
             #endregion
-        }
 
+            #region Exam
+            CreateMap<ExamDTO, Exam>();
+            CreateMap<Exam, ExamResultDTO>();
+            #endregion
+
+            #region question
+            CreateMap<QuestionDTO, Question>();
+            CreateMap<Question, QuestionResultDTO>();
+            #endregion
+
+            #region answer
+            CreateMap<AnswerDTO, Answer>();
+            CreateMap<Answer, AnswerResultDTO>();
+            #endregion
+        }
     }
 }

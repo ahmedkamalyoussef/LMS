@@ -19,7 +19,7 @@ namespace LMS.Api.Controllers
         }
 
         [Authorize(Roles = ConstRoles.Teacher)]
-        [HttpPut]
+        [HttpPut("image")]
         public async Task<IActionResult> UpdateImage(string newImagePath)
         {
             var result = await _teacherService.EditTeacherImage(newImagePath);
@@ -29,7 +29,7 @@ namespace LMS.Api.Controllers
 
 
         [Authorize(Roles = ConstRoles.Teacher)]
-        [HttpDelete]
+        [HttpDelete("image")]
         public async Task<IActionResult> DeleteImage()
         {
             var result = await _teacherService.DeleteTeacherPictureAsync();

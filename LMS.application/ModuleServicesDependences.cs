@@ -18,6 +18,8 @@ namespace LMS.Application
             service.AddTransient<IStudentService, StudentService>();
             service.AddTransient<ITeacherService, TeacherService>();
             service.AddTransient<IExamService, ExamService>();
+            service.AddTransient<IQuestionService, QuestionService>();
+            service.AddTransient<IAnswerSevrice, AnswerService>();
             service.AddTransient<IUserHelpers, UserHelpers>();
             service.AddTransient<IBookService, BookService>();
             service.AddTransient<ILectureService, LectureService>();

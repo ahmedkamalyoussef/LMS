@@ -38,10 +38,10 @@ namespace LMS.Application.Services
 
         public async Task<LectureResultDTO> GetLecture(string id)
         {
-            var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("book not found");
+            var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("lecture not found");
             var lectureResult = _mapper.Map<LectureResultDTO>(lecture);
             return lectureResult;
-        }
+        }   
 
         public async Task<int> GetNumberOfLecturesInCourse(string courseId)
         {
