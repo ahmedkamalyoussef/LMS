@@ -1,4 +1,5 @@
 ﻿using LMS.Application.Authentication;
+using LMS.Application.DTOs;
 using Microsoft.AspNetCore.Identity;
 
 namespace LMS.Application.Interfaces
@@ -15,5 +16,7 @@ namespace LMS.Application.Interfaces
         public Task<IdentityResult> SendOTPAsync(string email);
         public Task<AuthModel> RefreshTokenAsync(string Token);
         public Task<bool> RevokeTokenAsync(string Token);
+        Task<IUserResultDTO> GetCurrentUserInfoAsync();
+        public Task<bool> EditAccount(EditUserDTO userDto);
     }
 }

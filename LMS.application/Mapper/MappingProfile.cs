@@ -20,6 +20,7 @@ namespace LMS.Application.Mapper
             #region Teacher & student
             CreateMap<Teacher, TeacherResultDTO>();
             CreateMap<Student, StudenResultDTO>();
+            CreateMap<EditUserDTO, ApplicationUser>();
             #endregion
 
             #region Course

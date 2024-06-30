@@ -11,7 +11,8 @@ namespace LMS.Infrastructure.GenericRepository_UOW
         private IDbContextTransaction transaction;
 
         private readonly ApplicationDbContext _context;
-        
+
+        public IGenericRepository<ApplicationUser> Users { get; set; }
         public IGenericRepository<Student> Students { get; set; }
         public IGenericRepository<Teacher> Teachers { get; set; }
         public IGenericRepository<Admin> Admins { get; set; }
@@ -41,6 +42,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
             ExamResults = new GenericRepository<ExamResult>(_context);
             StudentCourses=new GenericRepository<StudentCourse>(_context);
             Evaluations = new GenericRepository<Evaluation>(_context);
+            Users = new GenericRepository<ApplicationUser>(_context);
         }
 
         public async Task CreateTransactionAsync()

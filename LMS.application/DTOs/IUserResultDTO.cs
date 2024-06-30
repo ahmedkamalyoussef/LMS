@@ -1,6 +1,6 @@
 ﻿namespace LMS.Application.DTOs
 {
-    public class StudenResultDTO:IUserResultDTO
+    public interface IUserResultDTO
     {
         public string Id { get; set; }
         public string FirstName { get; set; }

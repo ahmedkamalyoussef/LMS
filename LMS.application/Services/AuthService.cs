@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using LMS.Application.Authentication;
+using LMS.Application.DTOs;
 using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
 using LMS.Application.Mail;
 using LMS.Data.Consts;
 using LMS.Data.Entities;
+using LMS.Data.IGenericRepository_IUOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
@@ -18,7 +20,7 @@ namespace LMS.Application.Services
         IMailingService mailingService,
         SignInManager<ApplicationUser> signInManager,
         IHttpContextAccessor httpContextAccessor
-            ) : IAuthService
+        ,IUnitOfWork unitOfWork    ) : IAuthService
     {
         #region fields
         private readonly UserManager<ApplicationUser> _userManager = userManager;
@@ -27,6 +29,7 @@ namespace LMS.Application.Services
         private readonly IMailingService _mailingService = mailingService;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
         #endregion
 
         #region Registration
@@ -301,7 +304,43 @@ namespace LMS.Application.Services
                 CreatedOn = DateTime.UtcNow,
             };
         }
+
+
         #endregion
+
+        #region Get User
+        public async Task<IUserResultDTO> GetCurrentUserInfoAsync()
+        {
+            var currentUser = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("User not found.");
+
+            IUserResultDTO result;
+            if (await _userManager.IsInRoleAsync(currentUser,ConstRoles.Teacher))
+                 result = _mapper.Map<TeacherResultDTO>(currentUser);
+
+            else if (await _userManager.IsInRoleAsync(currentUser, ConstRoles.Student))
+                result = _mapper.Map<StudenResultDTO>(currentUser);
+
+            else result = _mapper.Map<AdminResultDTO>(currentUser);
+
+            return result;
+        }
+
+        #endregion
+        public async Task<bool> EditAccount(EditUserDTO userDto)
+        {
+            var currentUser = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
+            try
+            {
+                currentUser = _mapper.Map(userDto, currentUser);
+                await _unitOfWork.Users.UpdateAsync(currentUser);
+                await _unitOfWork.SaveAsync();
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
 
     }
 }

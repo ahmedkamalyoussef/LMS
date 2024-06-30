@@ -5,6 +5,7 @@ namespace LMS.Data.IGenericRepository_IUOW
 {
     public interface IUnitOfWork
     {
+        IGenericRepository<ApplicationUser> Users { get; set; }
         IGenericRepository<Student> Students { get; set; }
         IGenericRepository<Teacher> Teachers { get; set; }
         IGenericRepository<Admin> Admins { get; set; }

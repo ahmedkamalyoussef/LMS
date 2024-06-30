@@ -1,4 +1,5 @@
 ﻿using LMS.Application.Authentication;
+using LMS.Application.DTOs;
 using LMS.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,24 @@ namespace LMS.Api.Controllers
         private readonly IAuthService _authService = authService;
 
         #endregion
-        #region ctor
+
+        #region edit account
+        [Authorize]
+        [HttpPut("account")]
+        public async Task<IActionResult> EditCurrentUserInfo(EditUserDTO userDTO)
+        {
+            var result = await _authService.EditAccount(userDTO);
+            return result ? Ok("account has been updated successfully") : BadRequest("user not found");
+        }
+        #endregion
+        #region get current user
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetCurrentUserInfo()
+        {
+            var result = await _authService.GetCurrentUserInfoAsync();     
+            return result != null ? Ok(result): BadRequest("user not found");
+        }
         #endregion
 
         #region registration
