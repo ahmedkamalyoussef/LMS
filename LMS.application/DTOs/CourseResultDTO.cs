@@ -10,6 +10,7 @@
         public string Semester { get; set; }
         public string TeacherId { get; set; }
         public string Code { get; set; } 
+        public double Evaluation { get; set; }
         public TeacherResultDTO Teacher { get; set; }
     }
 }

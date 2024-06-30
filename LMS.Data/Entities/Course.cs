@@ -20,6 +20,7 @@ namespace LMS.Data.Entities
         public ICollection<Book>? Books { get; set; } = new HashSet<Book>();
         public ICollection<Lecture>? Lectures { get; set; } = new HashSet<Lecture>();
         public ICollection<Exam>? Exams { get; set; } = new HashSet<Exam>();
+        
         public ICollection<Evaluation>? Evaluations { get; set; } = new HashSet<Evaluation>();
     }
 }

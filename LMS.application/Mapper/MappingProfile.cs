@@ -4,6 +4,7 @@ using LMS.Application.DTOs;
 using LMS.Data.Entities;
 using LMS.Domain.Entities;
 using System.Net.Mail;
+using System.Net.NetworkInformation;
 
 namespace LMS.Application.Mapper
 {
@@ -26,7 +27,8 @@ namespace LMS.Application.Mapper
 
             #region Course
             CreateMap<CourseDTO, Course>();
-            CreateMap<Course, CourseResultDTO>();
+            CreateMap<Course, CourseResultDTO>()
+                .ForMember(dest => dest.Evaluation, opt => opt.MapFrom(src => CalculateAverageRate(src)));
             #endregion
 
             #region Book
@@ -62,6 +64,23 @@ namespace LMS.Application.Mapper
             #region Evaluation
             CreateMap<EvaluationDTO, Evaluation>();
             #endregion
+        }
+
+        private double CalculateAverageRate(Course course)
+        {
+            var evaluations = course.Evaluations;
+            if (evaluations == null || !evaluations.Any())
+            {
+                return 0;
+            }
+
+            double totalRate = 0;
+            foreach (var evaluation in evaluations)
+            {
+                totalRate += evaluation.Value;
+            }
+
+            return totalRate / evaluations.Count();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace LMS.Api.Controllers
     {
         private readonly ICourseService _courseService = courseService;
 
-        [Authorize(Roles = $"${ConstRoles.Teacher}")]
+        [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPost]
         public async Task<IActionResult> CreateCourse(CourseDTO courseDto)
         {
@@ -24,7 +24,7 @@ namespace LMS.Api.Controllers
         }
 
 
-        [Authorize(Roles = $"${ConstRoles.Teacher}")]
+        [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
         public async Task<IActionResult> UpdateCourse(string id, CourseDTO courseDto)
         {
@@ -37,7 +37,7 @@ namespace LMS.Api.Controllers
         }
 
 
-        [Authorize(Roles = $"${ConstRoles.Teacher}")]
+        [Authorize(Roles = ConstRoles.Teacher)]
         [HttpDelete]
         public async Task<IActionResult> DeleteCourse(string id)
         {
@@ -47,7 +47,7 @@ namespace LMS.Api.Controllers
         }
 
 
-        [Authorize(Roles = $"${ConstRoles.Admin}")]
+        [Authorize(Roles = ConstRoles.Admin)]
         [HttpPost("enroll")]
         public async Task<IActionResult> EnrollStudentInCourse(string studentEmail,string courseCode)
         {
