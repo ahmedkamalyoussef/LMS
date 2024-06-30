@@ -27,7 +27,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateExam(string id, ExamDTO exeamDto)
+        public async Task<IActionResult> UpdateExam(string id, EditExamDTO exeamDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

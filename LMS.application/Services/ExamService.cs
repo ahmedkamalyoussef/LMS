@@ -32,16 +32,29 @@ namespace LMS.Application.Services
 
         public async Task<List<ExamResultDTO>> GetCourseExams(string courseId)
         {
-            var exams = await _unitOfWork.Exams.FindAsync(b => b.CourseId == courseId);
+            var currentStudent = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
+            var exams = await _unitOfWork.Exams.FindAsync(b => b.CourseId == courseId, orderBy: b => b.Name);
             var examsResult = _mapper.Map<IEnumerable<ExamResultDTO>>(exams).ToList();
+            foreach(var exam in examsResult)
+            {
+                var exResult=await _unitOfWork.ExamResults.FindFirstAsync(ex=>ex.ExamId== exam.Id && ex.StudentId==currentStudent.Id);
+                if (exResult != null)
+                    exam.IsExamined = true;
+                else exam.IsExamined = false;
+            }
             return examsResult;
         }
 
         public async Task<ExamResultDTO> GetExam(string id)
         {
+            var currentStudent = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var exam = await _unitOfWork.Exams.FindFirstAsync(c => c.Id == id) ?? throw new Exception("exam not found");
-            var examResult = _mapper.Map<ExamResultDTO>(exam);
-            return examResult;
+            var examResult =await _unitOfWork.ExamResults.FindFirstAsync(ex=>ex.ExamId == id && ex.StudentId==currentStudent.Id);
+            var result = _mapper.Map<ExamResultDTO>(exam);
+            if(examResult != null)
+                result.IsExamined = true;
+            else result.IsExamined = false;
+            return result;
         }
 
         public async Task<double> GetExamResult(string examId)
@@ -67,7 +80,7 @@ namespace LMS.Application.Services
             return await _unitOfWork.SaveAsync() > 0;
         }
 
-        public async Task<bool> UpdateExam(string id, ExamDTO examDTO)
+        public async Task<bool> UpdateExam(string id, EditExamDTO examDTO)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var exam = await _unitOfWork.Exams.FindFirstAsync(c => c.Id == id) ?? throw new Exception("exam not found");

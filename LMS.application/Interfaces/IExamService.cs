@@ -9,7 +9,7 @@ namespace LMS.Application.Interfaces
         public Task<bool> SetExamResult(string examId,double result);
         public Task<List<ExamResultDTO>> GetCourseExams(string courseId);
         public Task<bool> CreateExam(ExamDTO examDTO);
-        public Task<bool> UpdateExam(string id, ExamDTO examDTO);
+        public Task<bool> UpdateExam(string id, EditExamDTO examDTO);
         public Task<bool> DeleteExam(string id);
         public Task<int> GetNumberOfExamsInCourse(string courseId);
     }

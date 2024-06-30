@@ -43,16 +43,19 @@ namespace LMS.Application.Mapper
 
             #region Exam
             CreateMap<ExamDTO, Exam>();
+            CreateMap<EditExamDTO, Exam>();
             CreateMap<Exam, ExamResultDTO>();
             #endregion
 
             #region question
             CreateMap<QuestionDTO, Question>();
+            CreateMap<QuestionResultDTO, Question>();
             CreateMap<Question, QuestionResultDTO>();
             #endregion
 
             #region answer
             CreateMap<AnswerDTO, Answer>();
+            CreateMap<AnswerResultDTO, Answer>();
             CreateMap<Answer, AnswerResultDTO>();
             #endregion
         }
