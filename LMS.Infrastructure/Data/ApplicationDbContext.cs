@@ -16,6 +16,7 @@ namespace LMS.Infrastructure.Data
         public DbSet<Course> Course { get; set; }
         public DbSet<StudentCourse> StudentCourse { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
