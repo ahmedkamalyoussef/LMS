@@ -18,6 +18,12 @@ namespace LMS.Domain.Configuration
                 .WithOne(e => e.Student)
                 .HasForeignKey(e => e.StudentId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder
+                .HasMany(c => c.Evaluations)
+                .WithOne(e => e.Student)
+                .HasForeignKey(e => e.StudentId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

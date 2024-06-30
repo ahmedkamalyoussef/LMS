@@ -58,6 +58,10 @@ namespace LMS.Application.Mapper
             CreateMap<EditAnswerDTO, Answer>();
             CreateMap<Answer, AnswerResultDTO>();
             #endregion
+
+            #region Evaluation
+            CreateMap<EvaluationDTO, Evaluation>();
+            #endregion
         }
     }
 }
