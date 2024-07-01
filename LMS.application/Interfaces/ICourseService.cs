@@ -11,7 +11,7 @@ namespace LMS.Application.Interfaces
         public Task<bool> DeleteCourse(string id);
         public Task<int> GetNumberOfCourses();
         public Task<List<CourseResultDTO>> GetCoursesByTeacherId(string id);
-        public Task<List<CourseResultDTO>> SearchForCources(string subject, string? semester, double from, double to, int pageSize, int pageIndex);
+        public Task<List<CourseResultDTO>> SearchForCources(string subject, string semester, double from, double to, int pageSize, int pageIndex);
         public Task<bool> EnrollingStudentInCourse(string StudentEmail ,string CourseCode);
         public Task<int> GetStudentCountInCourse(string courseId);
 
