@@ -123,13 +123,16 @@ namespace LMS.Application.Services
             return studentCourses.Count();
         }
 
-        public async Task<List<CourseResultDTO>> SearchForCources(string crateria)
+        public async Task<List<CourseResultDTO>> SearchForCources(string subject, string semester, double from, double to, int pageSize, int pageIndex)
         {
             var currentUser = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
-            var courses = await _unitOfWork.Courses.FindAsync(c => c.MaterialName.Contains(crateria)||c.Name.Contains(crateria)||c.Semester.Contains(crateria)||c.Teacher.FirstName.Contains(crateria)||c.Teacher.LastName.Contains(crateria)
-            ||crateria.Contains(c.MaterialName) || crateria.Contains(c.Name) || crateria.Contains(c.Semester) || crateria.Contains(c.Teacher.FirstName) || crateria.Contains(c.Teacher.LastName),
+            var courses = await _unitOfWork.Courses.FilterAsync(pageSize, pageIndex, [c => c.MaterialName.Contains(subject) || c.Name.Contains(subject)
+            || subject.Contains(c.MaterialName) || subject.Contains(c.Name),
+            c => semester.Contains(c.Semester) || c.Semester.Contains(semester),
+            c=> c.Price >= from && c.Price <= to
+            ],
             orderBy: course => course.Name,
-            direction: OrderDirection.Ascending,
+            direction: OrderDirection.Descending,
             includes:
             [
                 c => c.Teacher

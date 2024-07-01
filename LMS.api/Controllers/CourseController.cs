@@ -66,10 +66,10 @@ namespace LMS.Api.Controllers
 
 
         [Authorize]
-        [HttpGet("search")]
-        public async Task<IActionResult> GetCoursesByCrateria(string carteria)
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetCoursesByCrateria(string subject,int pageSize, int pageindex, string? semester = "" ,double from =0 ,double to=double.MaxValue)
         {
-            return Ok(await _courseService.SearchForCources(carteria));
+            return Ok(await _courseService.SearchForCources(subject,semester,from,to,pageSize,pageindex));
         }
 
 

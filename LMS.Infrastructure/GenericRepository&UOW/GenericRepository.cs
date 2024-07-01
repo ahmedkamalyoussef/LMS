@@ -31,7 +31,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
 
             if (orderBy != null)
             {
-                if (direction == OrderDirection.Ascending)
+                if (direction == OrderDirection.Descending)
                     query = query.OrderBy(orderBy);
                 else
                     query = query.OrderByDescending(orderBy);
@@ -42,7 +42,29 @@ namespace LMS.Infrastructure.GenericRepository_UOW
 
             return await query.ToListAsync();
         }
+        public async Task<IEnumerable<T>> FilterAsync(int pageSize, int pageIndex,List< Expression<Func<T, bool>>> expressions,  Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            foreach (var expression in expressions)
+            {
+                query=query.Where(expression);
+            }
 
+            if (orderBy != null)
+            {
+                if (direction == OrderDirection.Descending)
+                    query = query.OrderBy(orderBy);
+                else
+                    query = query.OrderByDescending(orderBy);
+            }
+            query = query.Skip((pageIndex - 1) *pageSize).Take( pageSize);
+
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            return await query.ToListAsync();
+        }
         public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression, List<Expression<Func<T, object>>> includes = null)
         {
             IQueryable<T> query = _context.Set<T>();
