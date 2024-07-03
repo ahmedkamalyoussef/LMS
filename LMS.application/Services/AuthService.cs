@@ -39,7 +39,7 @@ namespace LMS.Application.Services
 
             if (userExist != null)
             {
-                if (userExist.EmailConfirmed)
+                if (!userExist.EmailConfirmed)
                 {
                     await SendOTPAsync(userExist.Email);
                     return IdentityResult.Success;
