@@ -9,9 +9,10 @@ using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
 using System.Text;
-
+using System.Threading.Channels;
 namespace LMS.Application.Services
 {
     public class AuthService(
@@ -20,9 +21,11 @@ namespace LMS.Application.Services
         IMailingService mailingService,
         SignInManager<ApplicationUser> signInManager,
         IHttpContextAccessor httpContextAccessor
-        ,IUnitOfWork unitOfWork    ) : IAuthService
+        ,IUnitOfWork unitOfWork
+        , IServiceProvider serviceProvider) : IAuthService
     {
         #region fields
+        private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
@@ -69,7 +72,8 @@ namespace LMS.Application.Services
                 await _userManager.UpdateAsync(user);
 
                 var message = new MailMessage(new[] { user.Email }, "Your OTP for Email Confirmation", $"Your OTP is: {otp}");
-                _mailingService.SendMail(message);
+                var channel = _serviceProvider.GetRequiredService<Channel<MailMessage>>();
+                await channel.Writer.WriteAsync(message);
             }
 
             return result;

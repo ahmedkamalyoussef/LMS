@@ -4,16 +4,11 @@ using MailKit.Net.Smtp;
 
 namespace LMS.Application.Mail
 {
-    public class MailingService : IMailingService
+    public class MailingService(IOptions<MailSettings> mailSettings) : IMailingService
     {
         #region fields
-        private readonly MailSettings _mailSettings;
-        #endregion
-        #region ctor
-        public MailingService(IOptions<MailSettings> mailSettings)
-        {
-            _mailSettings = mailSettings.Value;
-        }
+        private readonly MailSettings _mailSettings = mailSettings.Value;
+
         #endregion
         #region methods
 
@@ -35,19 +30,17 @@ namespace LMS.Application.Mail
 
         private void Send(MimeMessage message)
         {
-            using (var client = new SmtpClient())
+            using var client = new SmtpClient();
+            try
             {
-                try
-                {
-                    client.Connect(_mailSettings.SmtpServer, _mailSettings.Port, true);
-                    client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate(_mailSettings.Username, _mailSettings.Password);
-                    client.Send(message);
-                }
-                finally
-                {
-                    client.Disconnect(true);
-                }
+                client.Connect(_mailSettings.SmtpServer, _mailSettings.Port, true);
+                client.AuthenticationMechanisms.Remove("XOAUTH2");
+                client.Authenticate(_mailSettings.Username, _mailSettings.Password);
+                client.Send(message);
+            }
+            finally
+            {
+                client.Disconnect(true);
             }
         }
         #endregion
