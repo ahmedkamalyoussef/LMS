@@ -16,23 +16,24 @@ using System.Threading.Channels;
 namespace LMS.Application.Services
 {
     public class AuthService(
-        UserManager<ApplicationUser> userManager, IMapper mapper,
-        IUserHelpers userHelpers,
-        IMailingService mailingService,
-        SignInManager<ApplicationUser> signInManager,
-        IHttpContextAccessor httpContextAccessor
-        ,IUnitOfWork unitOfWork
-        , IServiceProvider serviceProvider) : IAuthService
+    UserManager<ApplicationUser> userManager,
+    IMapper mapper,
+    IUserHelpers userHelpers,
+    SignInManager<ApplicationUser> signInManager,
+    IHttpContextAccessor httpContextAccessor,
+    IUnitOfWork unitOfWork,
+    IServiceProvider serviceProvider
+) : IAuthService
     {
         #region fields
         private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
-        private readonly IMailingService _mailingService = mailingService;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly Channel<MailMessage> _mailChannel = serviceProvider.GetRequiredService<Channel<MailMessage>>();
         #endregion
 
         #region Registration
@@ -62,22 +63,24 @@ namespace LMS.Application.Services
             }
 
             IdentityResult result = await _userManager.CreateAsync(user, registerUser.Password);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, registerUser.AccountType.ToString());
-
-                var otp = GenerateOTP();
-                user.OTP = otp;
-                user.OTPExpiry = DateTime.UtcNow.AddMinutes(15);
-                await _userManager.UpdateAsync(user);
-
-                var message = new MailMessage(new[] { user.Email }, "Your OTP for Email Confirmation", $"Your OTP is: {otp}");
-                var channel = _serviceProvider.GetRequiredService<Channel<MailMessage>>();
-                await channel.Writer.WriteAsync(message);
+                return result;
             }
+
+            await _userManager.AddToRoleAsync(user, registerUser.AccountType.ToString());
+
+            var otp = GenerateOTP();
+            user.OTP = otp;
+            user.OTPExpiry = DateTime.UtcNow.AddMinutes(15);
+            await _userManager.UpdateAsync(user);
+
+            var message = new MailMessage(new[] { user.Email }, "Your OTP for Email Confirmation", $"Your OTP is: {otp}");
+            await _mailChannel.Writer.WriteAsync(message);
 
             return result;
         }
+
 
 
 
@@ -256,7 +259,7 @@ namespace LMS.Application.Services
             await _userManager.UpdateAsync(user);
 
             var message = new MailMessage(new[] { user.Email }, "Your OTP", $"Your OTP is: {otp}");
-            _mailingService.SendMail(message);
+            await _mailChannel.Writer.WriteAsync(message);
 
             return IdentityResult.Success;
         }
