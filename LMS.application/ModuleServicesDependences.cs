@@ -28,5 +28,5 @@ namespace LMS.Application
             service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             return service;
         }
-    }
+    } 
 }
