@@ -44,7 +44,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
         }
         public async Task<IEnumerable<T>> FilterAsync(int pageSize, int pageIndex,List< Expression<Func<T, bool>>> expressions,  Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
         {
-            IQueryable<T> query = _context.Set<T>();
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
             foreach (var expression in expressions)
             {
                 query=query.Where(expression);
@@ -53,9 +53,9 @@ namespace LMS.Infrastructure.GenericRepository_UOW
             if (orderBy != null)
             {
                 if (direction == OrderDirection.Descending)
-                    query = query.OrderBy(orderBy);
-                else
                     query = query.OrderByDescending(orderBy);
+                else
+                    query = query.OrderBy(orderBy);
             }
             query = query.Skip((pageIndex - 1) *pageSize).Take( pageSize);
 
@@ -83,7 +83,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
         {
-            IQueryable<T> query = _context.Set<T>();
+            IQueryable<T> query = _context.Set<T>().AsNoTracking();
 
             if (orderBy != null)
             {
@@ -117,7 +117,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
 
         public async Task<int> CountAsync()
         {
-            return await _context.Set<T>().CountAsync();
+            return await _context.Set<T>().AsNoTracking().CountAsync();
         }
     }
 }
