@@ -7,7 +7,6 @@ using LMS.Application.Mail;
 using LMS.Data.Consts;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Cryptography;
@@ -20,18 +19,15 @@ namespace LMS.Application.Services
     IMapper mapper,
     IUserHelpers userHelpers,
     SignInManager<ApplicationUser> signInManager,
-    IHttpContextAccessor httpContextAccessor,
     IUnitOfWork unitOfWork,
     IServiceProvider serviceProvider
 ) : IAuthService
     {
         #region fields
-        private readonly IServiceProvider _serviceProvider = serviceProvider;
         private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
-        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly Channel<MailMessage> _mailChannel = serviceProvider.GetRequiredService<Channel<MailMessage>>();
         #endregion

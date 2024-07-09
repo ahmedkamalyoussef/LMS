@@ -6,14 +6,10 @@ using System.Linq.Expressions;
 
 namespace LMS.Infrastructure.GenericRepository_UOW
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<T>(ApplicationDbContext context) : IGenericRepository<T>
+        where T : class
     {
-        protected readonly ApplicationDbContext _context;
-
-        public GenericRepository(ApplicationDbContext context)
-        {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-        }
+        private readonly ApplicationDbContext _context = context ?? throw new ArgumentNullException(nameof(context));
 
         public async Task AddAsync(T entity)
         {
@@ -25,7 +21,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
             await _context.Set<T>().AddRangeAsync(entities);
         }
 
-        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression, Expression<Func<T, object>>? orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
         {
             IQueryable<T> query = _context.Set<T>().Where(expression);
 
