@@ -25,7 +25,7 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddInfrastructureServices().AddReposetoriesServices();
 //
 builder.Services.AddSingleton(Channel.CreateUnbounded<MailMessage>());
-builder.Services.AddHostedService<BackgroundEmailSender>();
+builder.Services.AddHostedService<BackgroundEmailSender>();  
 #region mailing
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));
 builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
