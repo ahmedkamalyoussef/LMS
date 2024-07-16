@@ -7,16 +7,19 @@ using LMS.Data.IGenericRepository_IUOW;
 
 namespace LMS.Application.Services
 {
-    public class LectureService(IUnitOfWork unitOfWork, IMapper mapper, IUserHelpers userHelpers) : ILectureService
+    public class LectureService(IUnitOfWork unitOfWork, IMapper mapper, IUserHelpers userHelpers, CloudinaryService cloudinaryService) : ILectureService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
+        private readonly CloudinaryService _cloudinaryService = cloudinaryService;
 
         public async Task<bool> CreateLecture(LectureDTO lectureDto)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = _mapper.Map<Lecture>(lectureDto);
+            if (lectureDto.Lecture != null)
+                lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lecture);
             await _unitOfWork.Lectures.AddAsync(lecture);
             return await _unitOfWork.SaveAsync() > 0;
         }
@@ -41,7 +44,7 @@ namespace LMS.Application.Services
             var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("lecture not found");
             var lectureResult = _mapper.Map<LectureResultDTO>(lecture);
             return lectureResult;
-        }   
+        }
 
         public async Task<int> GetNumberOfLecturesInCourse(string courseId)
         {
