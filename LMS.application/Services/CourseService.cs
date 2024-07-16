@@ -33,10 +33,15 @@ namespace LMS.Application.Services
             if (courseDTO.CourseImage != null)
             {
                 course.Image = await _cloudinaryService.UploadImageAsync(courseDTO.CourseImage);
-                await _cloudinaryService.DeleteFileAsync(oldImgPath);
             }
             await _unitOfWork.Courses.UpdateAsync(course);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
         public async Task<bool> DeleteCourse(string id)
         {
@@ -47,7 +52,8 @@ namespace LMS.Application.Services
             await _unitOfWork.Courses.RemoveAsync(course);
             if (await _unitOfWork.SaveAsync() > 0)
             {
-                await _cloudinaryService.DeleteFileAsync(oldImgPath);
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
                 return true;
             }
             return false;

@@ -28,8 +28,17 @@ namespace LMS.Application.Services
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("lecture not found");
+            var oldImgPath = lecture.LectureUrl;
+
             await _unitOfWork.Lectures.RemoveAsync(lecture);
-            return await _unitOfWork.SaveAsync() > 0;
+
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteVideoAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
 
         public async Task<List<LectureResultDTO>> GetCourseLectures(string courseId)
@@ -57,8 +66,19 @@ namespace LMS.Application.Services
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
             _mapper.Map(lectureDto, lecture);
+            var oldImgPath = lecture.LectureUrl;
+            if (lectureDto.Lectur != null)
+            {
+                lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lectur);
+            }
             await _unitOfWork.Lectures.UpdateAsync(lecture);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteVideoAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
     }
 }
