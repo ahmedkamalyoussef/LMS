@@ -7,16 +7,19 @@ using LMS.Data.IGenericRepository_IUOW;
 
 namespace LMS.Application.Services
 {
-    public class BookService(IUnitOfWork unitOfWork, IMapper mapper, IUserHelpers userHelpers) : IBookService
+    public class BookService(IUnitOfWork unitOfWork, IMapper mapper, IUserHelpers userHelpers, CloudinaryService cloudinaryService) : IBookService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
+        private readonly CloudinaryService _cloudinaryService = cloudinaryService;
 
         public async Task<bool> CreateBook(BookDTO bookDto)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = _mapper.Map<Book>(bookDto);
+            if (bookDto.Book != null)
+                book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
             await _unitOfWork.Books.AddAsync(book);
             return await _unitOfWork.SaveAsync() > 0;
         }
@@ -25,8 +28,15 @@ namespace LMS.Application.Services
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("book not found");
+            var oldImgPath = book.BookUrl;
             await _unitOfWork.Books.RemoveAsync(book);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
 
         public async Task<LectureDtoResultDTO> GetBook(string id)
@@ -54,8 +64,17 @@ namespace LMS.Application.Services
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
             _mapper.Map(bookDto, book);
+            var oldImgPath = book.BookUrl;
+            if (bookDto.Book != null)
+                book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
             await _unitOfWork.Books.UpdateAsync(book);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
     }
 }

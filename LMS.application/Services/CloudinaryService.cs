@@ -83,36 +83,39 @@ namespace LMS.Application.Services
 
         public async Task DeleteImageAsync(string url)
         {
-            await DeleteFileAsync(url);
+            await DeleteMediaAsync(url);
         }
 
         public async Task DeleteVideoAsync(string url)
         {
-            await DeleteFileAsync(url, ResourceType.Video);
+            await DeleteMediaAsync(url, ResourceType.Video);
         }
 
         public async Task DeleteRawFileAsync(string url)
         {
-            await DeleteFileAsync(url, ResourceType.Raw);
+            await DeleteFileAsync(url);
         }
 
-        private async Task DeleteFileAsync(string url, ResourceType resourceType = ResourceType.Image)
+        private async Task DeleteMediaAsync(string url, ResourceType resourceType = ResourceType.Image)
+        {
+            var publicId = GetPublicIdFromUrl(url);
+            var deletionParams = new DeletionParams(publicId) { ResourceType = resourceType };
+            await _cloudinary.DestroyAsync(deletionParams);
+        }
+
+        private async Task DeleteFileAsync(string url)
         {
             try
             {
                 var publicId = GetPublicIdFromUrl(url);
-                var deletionParams = new DeletionParams(publicId) { ResourceType = resourceType };
-                var deletionResult = await _cloudinary.DestroyAsync(deletionParams);
-
-                if (deletionResult.Result != "ok")
-                {
-                    throw new Exception($"Failed to delete file: {deletionResult.Error?.Message}");
-                }
+                var deletionParams = new DeletionParams(publicId) { ResourceType = ResourceType.Raw };
+                await _cloudinary.DeleteResourcesAsync(ResourceType.Raw, publicId);
             }
             catch
             {
-                throw new Exception("Failed to delete the file");
+                throw new Exception($"Could not delete {url}");
             }
+
         }
 
         private string GetPublicIdFromUrl(string url)
