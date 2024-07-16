@@ -2,32 +2,49 @@
 using LMS.Application.Interfaces;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Services
 {
-    public class TeacherService(IUnitOfWork unitOfWork, IUserHelpers userHelpers) : ITeacherService
+    public class TeacherService(IUnitOfWork unitOfWork, IUserHelpers userHelpers, CloudinaryService cloudinaryService) : ITeacherService
     {
 
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
         private readonly IUserHelpers _userHelpers = userHelpers;
+        private readonly CloudinaryService _cloudinaryService = cloudinaryService;
 
 
         public async Task<bool> DeleteTeacherPictureAsync()
         {
-            Teacher user = (Teacher) await _userHelpers.GetCurrentUserAsync();
+            Teacher user = (Teacher)await _userHelpers.GetCurrentUserAsync();
             if (user == null) return false;
+            var oldImgPath = user.Image;
             user.Image = null;
             await _unitOfWork.Users.UpdateAsync(user);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
 
-        public async Task<bool> EditTeacherImage(string imagePath)
+        public async Task<bool> EditTeacherImage(IFormFile image)
         {
-            Teacher user = (Teacher) await _userHelpers.GetCurrentUserAsync();
+            Teacher user = (Teacher)await _userHelpers.GetCurrentUserAsync();
             if (user == null) return false;
-            user.Image = imagePath;
+            var oldImgPath = user.Image;
+            user.Image = await _cloudinaryService.UploadImageAsync(image);
+
             await _unitOfWork.Users.UpdateAsync(user);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+            {
+                if (oldImgPath != null)
+                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                return true;
+            }
+            return false;
         }
 
         public async Task<int> GetTeachersCount()

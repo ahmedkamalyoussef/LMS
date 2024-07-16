@@ -20,9 +20,9 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut("image")]
-        public async Task<IActionResult> UpdateImage(string newImagePath)
+        public async Task<IActionResult> UpdateImage(IFormFile newImage)
         {
-            var result = await _teacherService.EditTeacherImage(newImagePath);
+            var result = await _teacherService.EditTeacherImage(newImage);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }
