@@ -63,7 +63,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
         }
         public async Task<T> FindFirstAsync(Expression<Func<T, bool>> expression, List<Expression<Func<T, object>>> includes = null)
         {
-            IQueryable<T> query = _context.Set<T>();
+            IQueryable<T> query = _context.Set<T>().Where(expression);
 
             if (includes != null)
             {
@@ -73,8 +73,9 @@ namespace LMS.Infrastructure.GenericRepository_UOW
                 }
             }
 
-            return await query.FirstOrDefaultAsync(expression);
+            return await query.FirstOrDefaultAsync();
         }
+
 
 
         public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)

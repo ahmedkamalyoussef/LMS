@@ -10,23 +10,25 @@ namespace LMS.Application
 {
     public static class ModuleServicesDependences
     {
-        public static IServiceCollection AddReposetoriesServices(this IServiceCollection service)
+        public static IServiceCollection AddReposetoriesServices(this IServiceCollection services)
         {
-            service.AddAutoMapper(typeof(MappingProfile));
-            service.AddTransient<IAuthService, AuthService>();
-            service.AddTransient<ICourseService, CourseService>();
-            service.AddTransient<IStudentService, StudentService>();
-            service.AddTransient<ITeacherService, TeacherService>();
-            service.AddTransient<IExamService, ExamService>();
-            service.AddTransient<IQuestionService, QuestionService>();
-            service.AddTransient<IAnswerSevrice, AnswerService>();
-            service.AddTransient<IEvaluationService, EvaluationService>();
-            service.AddTransient<IUserHelpers, UserHelpers>();
-            service.AddTransient<IBookService, BookService>();
-            service.AddTransient<ILectureService, LectureService>();
-            service.AddScoped<IMailingService, MailingService>();
-            service.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            return service;
+            services.AddScoped<CloudinaryService>();
+            services.AddLogging();
+            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddTransient<IAuthService, AuthService>();
+            services.AddTransient<ICourseService, CourseService>();
+            services.AddTransient<IStudentService, StudentService>();
+            services.AddTransient<ITeacherService, TeacherService>();
+            services.AddTransient<IExamService, ExamService>();
+            services.AddTransient<IQuestionService, QuestionService>();
+            services.AddTransient<IAnswerSevrice, AnswerService>();
+            services.AddTransient<IEvaluationService, EvaluationService>();
+            services.AddTransient<IUserHelpers, UserHelpers>();
+            services.AddTransient<IBookService, BookService>();
+            services.AddTransient<ILectureService, LectureService>();
+            services.AddScoped<IMailingService, MailingService>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            return services;
         }
-    } 
+    }
 }
