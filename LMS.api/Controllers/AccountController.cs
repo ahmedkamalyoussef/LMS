@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AccountController(IAuthService authService) : ControllerBase
     {
@@ -29,8 +29,8 @@ namespace LMS.Api.Controllers
         [HttpGet("user")]
         public async Task<IActionResult> GetCurrentUserInfo()
         {
-            var result = await _authService.GetCurrentUserInfoAsync();     
-            return result != null ? Ok(result): BadRequest("user not found");
+            var result = await _authService.GetCurrentUserInfoAsync();
+            return result != null ? Ok(result) : BadRequest("user not found");
         }
         #endregion
 

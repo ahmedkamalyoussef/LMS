@@ -128,7 +128,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Book");
+                    b.ToTable("Book", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Course", b =>
@@ -169,7 +169,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Course");
+                    b.ToTable("Course", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Evaluation", b =>
@@ -194,7 +194,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Evaluation");
+                    b.ToTable("Evaluation", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Exam", b =>
@@ -214,7 +214,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Exam");
+                    b.ToTable("Exam", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.ExamResult", b =>
@@ -232,7 +232,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("ExamResult");
+                    b.ToTable("ExamResult", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Lecture", b =>
@@ -256,7 +256,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lecture");
+                    b.ToTable("Lecture", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Question", b =>
@@ -276,7 +276,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Question", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.StudentCourse", b =>
@@ -291,7 +291,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StudentCourse");
+                    b.ToTable("StudentCourse", (string)null);
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Answer", b =>
@@ -314,7 +314,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answer");
+                    b.ToTable("Answer", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -499,7 +499,7 @@ namespace LMS.Infrastructure.Migrations
 
             modelBuilder.Entity("LMS.Data.Entities.ApplicationUser", b =>
                 {
-                    b.OwnsMany("LMS.Data.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("LMS.Data.Entities.ApplicationUser.RefreshTokens#LMS.Data.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -525,7 +525,7 @@ namespace LMS.Infrastructure.Migrations
 
                             b1.HasKey("ApplicationUserId", "Id");
 
-                            b1.ToTable("RefreshToken");
+                            b1.ToTable("RefreshToken", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");

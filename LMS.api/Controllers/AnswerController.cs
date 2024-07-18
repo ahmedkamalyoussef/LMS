@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     [Authorize(Roles = ConstRoles.Teacher)]
     public class AnswerController(IAnswerSevrice answerSevrice) : ControllerBase

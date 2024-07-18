@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CourseController(ICourseService courseService) : ControllerBase
     {
@@ -49,7 +49,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Admin)]
         [HttpPost("enroll")]
-        public async Task<IActionResult> EnrollStudentInCourse(string studentEmail,string courseCode)
+        public async Task<IActionResult> EnrollStudentInCourse(string studentEmail, string courseCode)
         {
             var result = await _courseService.EnrollingStudentInCourse(studentEmail, courseCode);
             return result ? Ok("student has been added successfully") : BadRequest("failed to add student");
@@ -67,9 +67,9 @@ namespace LMS.Api.Controllers
 
         [Authorize]
         [HttpGet("filter")]
-        public async Task<IActionResult> GetCoursesByCrateria(string subject,int pageSize, int pageindex, string? semester = "" ,double from =0 ,double to=double.MaxValue)
+        public async Task<IActionResult> GetCoursesByCrateria(string subject, int pageSize, int pageindex, string? semester = "", double from = 0, double to = double.MaxValue)
         {
-            return Ok(await _courseService.SearchForCources(subject,semester,from,to,pageSize,pageindex));
+            return Ok(await _courseService.SearchForCources(subject, semester, from, to, pageSize, pageindex));
         }
 
 
@@ -78,7 +78,7 @@ namespace LMS.Api.Controllers
         public async Task<IActionResult> GetCourse(string id)
         {
             var course = await _courseService.GetCourse(id);
-            return course != null ?  Ok(course) : throw new Exception("course not found") ;
+            return course != null ? Ok(course) : throw new Exception("course not found");
         }
 
 
