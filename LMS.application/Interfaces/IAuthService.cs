@@ -8,7 +8,7 @@ namespace LMS.Application.Interfaces
     {
         public Task<IdentityResult> RegisterAsync(RegisterUser registerUser);
         public Task<AuthModel> LoginAsync(LoginUser loginUser);
-        public Task<string> LogoutAsync();
+        public Task<string> LogoutAsync(string token);
         public Task<bool> ForgetPasswordAsync(string email);
         public Task<IdentityResult> ResetPasswordAsync(ResetPassword resetPassword);
         public Task<IdentityResult> ChangePasswordAsync(ChangePassword changePassword);

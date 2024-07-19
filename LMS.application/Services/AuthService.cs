@@ -42,6 +42,7 @@ namespace LMS.Application.Services
                 if (!userExist.EmailConfirmed)
                 {
                     await SendOTPAsync(userExist.Email);
+                    await _unitOfWork.Users.UpdateAsync(userExist);
                     return IdentityResult.Success;
                 }
                 return IdentityResult.Failed(new IdentityError { Description = "User already exists" });
@@ -131,14 +132,14 @@ namespace LMS.Application.Services
         #endregion
 
         #region logout
-        public async Task<string> LogoutAsync()
+        public async Task<string> LogoutAsync(string token)
         {
             if (await _userHelpers.GetCurrentUserAsync() == null)
             {
                 return "User Not Found";
             }
             await _signInManager.SignOutAsync();
-
+            await RevokeTokenAsync(token);
             return "User Logged Out Successfully";
         }
         #endregion
@@ -317,8 +318,8 @@ namespace LMS.Application.Services
             var currentUser = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("User not found.");
 
             IUserResultDTO result;
-            if (await _userManager.IsInRoleAsync(currentUser,ConstRoles.Teacher))
-                 result = _mapper.Map<TeacherResultDTO>(currentUser);
+            if (await _userManager.IsInRoleAsync(currentUser, ConstRoles.Teacher))
+                result = _mapper.Map<TeacherResultDTO>(currentUser);
 
             else if (await _userManager.IsInRoleAsync(currentUser, ConstRoles.Student))
                 result = _mapper.Map<StudenResultDTO>(currentUser);

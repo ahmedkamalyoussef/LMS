@@ -72,9 +72,9 @@ namespace LMS.Api.Controllers
         #region LogOut
         [HttpPost("LogOut")]
         [Authorize]
-        public async Task<IActionResult> LogOut()
+        public async Task<IActionResult> LogOut(string token)
         {
-            var result = await _authService.LogoutAsync();
+            var result = await _authService.LogoutAsync(token);
             if (result == "User Logged Out Successfully")
                 return Ok(result);
             return BadRequest(result);
