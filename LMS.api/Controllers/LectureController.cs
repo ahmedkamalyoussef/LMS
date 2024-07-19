@@ -15,7 +15,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPost]
-        public async Task<IActionResult> CreateLecture([FromBody] LectureDTO lectureDto)
+        public async Task<IActionResult> CreateLecture(LectureDTO lectureDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -27,7 +27,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateLecture(string id, [FromBody] EditLectureDTO lectureDto)
+        public async Task<IActionResult> UpdateLecture(string id, EditLectureDTO lectureDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

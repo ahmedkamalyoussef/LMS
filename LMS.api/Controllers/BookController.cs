@@ -14,7 +14,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPost]
-        public async Task<IActionResult> CreateBook([FromBody] BookDTO bookDto)
+        public async Task<IActionResult> CreateBook(BookDTO bookDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -26,7 +26,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateBook(string id, [FromBody] EditBookDTO bookDto)
+        public async Task<IActionResult> UpdateBook(string id, EditBookDTO bookDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

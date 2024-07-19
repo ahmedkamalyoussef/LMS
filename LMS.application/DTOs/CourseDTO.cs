@@ -6,6 +6,7 @@ namespace LMS.Application.DTOs
     {
         public string Name { get; set; }
         public string? MaterialName { get; set; }
+
         public IFormFile? CourseImage { get; set; }
         public string Level { get; set; }
         public string Semester { get; set; }
