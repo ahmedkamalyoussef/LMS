@@ -42,15 +42,12 @@ namespace LMS.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Govenorate")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -128,7 +125,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Book", (string)null);
+                    b.ToTable("Book");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Course", b =>
@@ -169,7 +166,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("TeacherId");
 
-                    b.ToTable("Course", (string)null);
+                    b.ToTable("Course");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Evaluation", b =>
@@ -194,7 +191,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Evaluation", (string)null);
+                    b.ToTable("Evaluation");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Exam", b =>
@@ -214,7 +211,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Exam", (string)null);
+                    b.ToTable("Exam");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.ExamResult", b =>
@@ -232,7 +229,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("ExamResult", (string)null);
+                    b.ToTable("ExamResult");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Lecture", b =>
@@ -256,7 +253,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lecture", (string)null);
+                    b.ToTable("Lecture");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.Question", b =>
@@ -276,7 +273,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("ExamId");
 
-                    b.ToTable("Question", (string)null);
+                    b.ToTable("Question");
                 });
 
             modelBuilder.Entity("LMS.Data.Entities.StudentCourse", b =>
@@ -291,7 +288,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StudentCourse", (string)null);
+                    b.ToTable("StudentCourse");
                 });
 
             modelBuilder.Entity("LMS.Domain.Entities.Answer", b =>
@@ -314,7 +311,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Answer", (string)null);
+                    b.ToTable("Answer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -499,7 +496,7 @@ namespace LMS.Infrastructure.Migrations
 
             modelBuilder.Entity("LMS.Data.Entities.ApplicationUser", b =>
                 {
-                    b.OwnsMany("LMS.Data.Entities.ApplicationUser.RefreshTokens#LMS.Data.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("LMS.Data.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("ApplicationUserId")
                                 .HasColumnType("nvarchar(450)");
@@ -525,7 +522,7 @@ namespace LMS.Infrastructure.Migrations
 
                             b1.HasKey("ApplicationUserId", "Id");
 
-                            b1.ToTable("RefreshToken", (string)null);
+                            b1.ToTable("RefreshToken");
 
                             b1.WithOwner()
                                 .HasForeignKey("ApplicationUserId");

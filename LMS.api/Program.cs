@@ -1,10 +1,10 @@
+using LMS.Api;
+using LMS.Application;
+using LMS.Application.Extentions;
+using LMS.Application.Mail;
+using LMS.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using LMS.Api;
-using LMS.Infrastructure;
-using LMS.Application;
-using LMS.Application.Mail;
-using LMS.Application.Extentions;
 using System.Threading.Channels;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,7 +25,7 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddInfrastructureServices().AddReposetoriesServices();
 //
 builder.Services.AddSingleton(Channel.CreateUnbounded<MailMessage>());
-builder.Services.AddHostedService<BackgroundEmailSender>();  
+builder.Services.AddHostedService<BackgroundEmailSender>();
 #region mailing
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("Mailing"));
 builder.Services.Configure<IdentityOptions>(opts => opts.SignIn.RequireConfirmedEmail = true);
