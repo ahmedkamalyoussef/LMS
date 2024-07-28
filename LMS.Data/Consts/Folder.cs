@@ -4,6 +4,7 @@
     {
         Image,
         Book,
-        Lecture
+        Lecture,
+        Profile
     }
 }

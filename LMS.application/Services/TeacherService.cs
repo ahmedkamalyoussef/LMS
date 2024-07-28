@@ -2,6 +2,7 @@
 using LMS.Application.Interfaces;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
+using LMS.Domain.Consts;
 using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Services
@@ -24,7 +25,8 @@ namespace LMS.Application.Services
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Profile);
+                //await _cloudinaryService.DeleteImageAsync(oldImgPath);
                 return true;
             }
             return false;
@@ -35,13 +37,16 @@ namespace LMS.Application.Services
             Teacher user = (Teacher)await _userHelpers.GetCurrentUserAsync();
             if (user == null) return false;
             var oldImgPath = user.Image;
-            user.Image = await _cloudinaryService.UploadImageAsync(image);
+            user.Image = await _userHelpers.AddFileAsync(image, Folder.Profile);
+
+            //user.Image = await _cloudinaryService.UploadImageAsync(image);
 
             await _unitOfWork.Users.UpdateAsync(user);
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Profile);
+                //await _cloudinaryService.DeleteImageAsync(oldImgPath);
                 return true;
             }
             return false;
