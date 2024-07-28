@@ -50,7 +50,7 @@ namespace LMS.Application.Services
         public async Task<bool> DeleteCourse(string id)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
-            var course = await _unitOfWork.Courses.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
+            var course = await _unitOfWork.Courses.FindFirstAsync(c => c.Id == id, includes: [c => c.Books, c => c.Lectures]) ?? throw new Exception("course not found");
             var oldImgPath = course.Image;
 
             await _unitOfWork.Courses.RemoveAsync(course);
@@ -59,6 +59,10 @@ namespace LMS.Application.Services
                 if (oldImgPath != null)
                     await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Image);
                 //await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                foreach (Book book in course.Books)
+                    await _userHelpers.DeleteFileAsync(book.BookUrl, Folder.Book);
+                foreach (Lecture lecture in course.Lectures)
+                    await _userHelpers.DeleteFileAsync(lecture.LectureUrl, Folder.Lecture);
                 return true;
             }
             return false;
