@@ -277,24 +277,23 @@ namespace LMS.Application.Services
 
             return IdentityResult.Success;
         }
+        private string GenerateOTP()
+        {
+            using var rng = new RNGCryptoServiceProvider();
+            var byteArray = new byte[6];
+            rng.GetBytes(byteArray);
+
+            var sb = new StringBuilder();
+            foreach (var byteValue in byteArray)
+            {
+                sb.Append(byteValue % 10);
+            }
+            return sb.ToString();
+        }
         #endregion
 
         #region private methods
-        private string GenerateOTP()
-        {
-            using (var rng = new RNGCryptoServiceProvider())
-            {
-                var byteArray = new byte[6];
-                rng.GetBytes(byteArray);
 
-                var sb = new StringBuilder();
-                foreach (var byteValue in byteArray)
-                {
-                    sb.Append(byteValue % 10);
-                }
-                return sb.ToString();
-            }
-        }
 
         private RefreshToken GenerateRefreshToken()
         {
