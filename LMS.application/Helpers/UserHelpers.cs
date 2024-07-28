@@ -1,4 +1,5 @@
 ﻿using LMS.Data.Entities;
+using LMS.Domain.Consts;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -59,78 +60,62 @@ namespace LMS.Application.Helpers
         #endregion
 
         #region file handling
-        //public async Task<string> AddFileAsync(IFormFile file, string folderName)
-        //{
-        //    if (file == null || file.Length == 0)
-        //    {
-        //        return string.Empty;
-        //    }
+        public async Task<string> AddFileAsync(IFormFile file, Folder folder)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return string.Empty;
+            }
 
-        //    string rootPath = _webHostEnvironment.WebRootPath;
-        //    var user = await GetCurrentUserAsync();
-        //    string userName = user.UserName;
-        //    string profileFolderPath = "";
-        //    if (folderName == ConstsFiles.CV)
-        //        profileFolderPath = Path.Combine(rootPath, "CV", userName);
-        //    else
-        //        profileFolderPath = Path.Combine(rootPath, "Images", userName, folderName);
-        //    if (!Directory.Exists(profileFolderPath))
-        //    {
-        //        Directory.CreateDirectory(profileFolderPath);
-        //    }
+            string rootPath = _webHostEnvironment.WebRootPath;
+            var user = await GetCurrentUserAsync() ?? throw new("user not found");
+            string userName = user.UserName;
 
-        //    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-        //    string filePath = Path.Combine(profileFolderPath, fileName);
+            string profileFolderPath = Path.Combine(rootPath, userName, folder.ToString());
+            if (!Directory.Exists(profileFolderPath))
+            {
+                Directory.CreateDirectory(profileFolderPath);
+            }
 
-        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await file.CopyToAsync(fileStream);
-        //    }
-        //    if (folderName == ConstsFiles.CV)
-        //        return $"/CV/{userName}/{fileName}";
-        //    return $"/Images/{userName}/{folderName}/{fileName}";
+            string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            string filePath = Path.Combine(profileFolderPath, fileName);
 
-        //}
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            return $"/{userName}/{folder.ToString()}/{fileName}";
+        }
 
-        //public async Task<bool> DeleteFileAsync(string filePath, string folderName)
-        //{
-        //    if (string.IsNullOrEmpty(filePath))
-        //    {
-        //        return true;
-        //    }
+        public async Task<bool> DeleteFileAsync(string filePath, Folder folder)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return true;
+            }
 
-        //    string rootPath = _webHostEnvironment.WebRootPath;
-        //    var user = await GetCurrentUserAsync();
-        //    string userName = user.UserName;
+            string rootPath = _webHostEnvironment.WebRootPath;
+            var user = await GetCurrentUserAsync();
+            string userName = user.UserName;
 
-        //    if (folderName == ConstsFiles.CV)
-        //    {
-        //        if (!filePath.StartsWith($"/CV/{userName}/"))
-        //        {
-        //            throw new ArgumentException("Invalid file path.", nameof(filePath));
-        //        }
-        //    }
+            if (!filePath.StartsWith($"/{userName}/{folder.ToString()}/"))
+            {
+                throw new ArgumentException("Invalid file path.", nameof(filePath));
+            }
 
-        //    else
-        //    {
-        //        if (!filePath.StartsWith($"/Images/{userName}/{folderName}/"))
-        //        {
-        //            throw new ArgumentException("Invalid file path.", nameof(filePath));
-        //        }
-        //    }
-        //    string fullFilePath = Path.Combine(rootPath, filePath.TrimStart('/'));
+            string fullFilePath = Path.Combine(rootPath, filePath.TrimStart('/'));
 
-        //    if (File.Exists(fullFilePath))
-        //    {
-        //        File.Delete(fullFilePath);
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        throw new FileNotFoundException("File not found.", fullFilePath);
-        //    }
+            if (File.Exists(fullFilePath))
+            {
+                File.Delete(fullFilePath);
+                return true;
+            }
+            else
+            {
+                throw new FileNotFoundException("File not found.", fullFilePath);
+            }
 
-        //}
+        }
         #endregion
     }
 }

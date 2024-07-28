@@ -1,6 +1,6 @@
 ﻿namespace LMS.Domain.Consts
 {
-    public enum Folders
+    public enum Folder
     {
         Course,
         Book,
