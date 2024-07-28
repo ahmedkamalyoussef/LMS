@@ -84,7 +84,7 @@ namespace LMS.Application.Helpers
             {
                 await file.CopyToAsync(fileStream);
             }
-            return $"/{userName}/{folder.ToString()}/{fileName}";
+            return $"/{userName}/{folder}/{fileName}";
         }
 
         public async Task<bool> DeleteFileAsync(string filePath, Folder folder)
@@ -98,7 +98,7 @@ namespace LMS.Application.Helpers
             var user = await GetCurrentUserAsync();
             string userName = user.UserName;
 
-            if (!filePath.StartsWith($"/{userName}/{folder.ToString()}/"))
+            if (!filePath.StartsWith($"/{userName}/{folder}/"))
             {
                 throw new ArgumentException("Invalid file path.", nameof(filePath));
             }

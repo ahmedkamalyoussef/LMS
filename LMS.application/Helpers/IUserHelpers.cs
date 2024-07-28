@@ -1,4 +1,5 @@
 ﻿using LMS.Data.Entities;
+using LMS.Domain.Consts;
 using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Helpers
@@ -7,7 +8,7 @@ namespace LMS.Application.Helpers
     {
         Task<string> GenerateJwtTokenAsync(ApplicationUser user);
         Task<ApplicationUser> GetCurrentUserAsync();
-        //Task<string> AddFileAsync(IFormFile file, string folderName);
-        //Task<bool> DeleteFileAsync(string imagePath, string folderName);
+        Task<string> AddFileAsync(IFormFile file, Folder folder);
+        Task<bool> DeleteFileAsync(string imagePath, Folder folder);
     }
 }

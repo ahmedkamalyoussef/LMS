@@ -2,7 +2,7 @@
 {
     public enum Folder
     {
-        Course,
+        Image,
         Book,
         Lecture
     }

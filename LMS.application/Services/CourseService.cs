@@ -5,6 +5,7 @@ using LMS.Application.Interfaces;
 using LMS.Data.Consts;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
+using LMS.Domain.Consts;
 
 namespace LMS.Application.Services
 {
@@ -20,7 +21,8 @@ namespace LMS.Application.Services
             var course = _mapper.Map<Course>(courseDto);
             course.TeacherId = teacher.Id;
             if (courseDto.CourseImage != null)
-                course.Image = await _cloudinaryService.UploadImageAsync(courseDto.CourseImage);
+                course.Image = await _userHelpers.AddFileAsync(courseDto.CourseImage, Folder.Image);
+            //course.Image = await _cloudinaryService.UploadImageAsync(courseDto.CourseImage);
             await _unitOfWork.Courses.AddAsync(course);
             return await _unitOfWork.SaveAsync() > 0;
         }
@@ -32,13 +34,15 @@ namespace LMS.Application.Services
             _mapper.Map(courseDTO, course);
             if (courseDTO.CourseImage != null)
             {
-                course.Image = await _cloudinaryService.UploadImageAsync(courseDTO.CourseImage);
+                course.Image = await _userHelpers.AddFileAsync(courseDTO.CourseImage, Folder.Image);
+                //course.Image = await _cloudinaryService.UploadImageAsync(courseDTO.CourseImage);
             }
             await _unitOfWork.Courses.UpdateAsync(course);
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Image);
+                //await _cloudinaryService.DeleteImageAsync(oldImgPath);
                 return true;
             }
             return false;
@@ -53,7 +57,8 @@ namespace LMS.Application.Services
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteImageAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Image);
+                //await _cloudinaryService.DeleteImageAsync(oldImgPath);
                 return true;
             }
             return false;
