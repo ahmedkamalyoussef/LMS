@@ -4,6 +4,7 @@ using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
+using LMS.Domain.Consts;
 
 namespace LMS.Application.Services
 {
@@ -19,7 +20,8 @@ namespace LMS.Application.Services
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = _mapper.Map<Book>(bookDto);
             if (bookDto.Book != null)
-                book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
+                book.BookUrl = await _userHelpers.AddFileAsync(bookDto.Book, Folder.Book);
+            //book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
             await _unitOfWork.Books.AddAsync(book);
             return await _unitOfWork.SaveAsync() > 0;
         }
@@ -33,7 +35,8 @@ namespace LMS.Application.Services
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Book);
+                //await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
                 return true;
             }
             return false;
@@ -66,12 +69,14 @@ namespace LMS.Application.Services
             _mapper.Map(bookDto, book);
             var oldImgPath = book.BookUrl;
             if (bookDto.Book != null)
-                book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
+                book.BookUrl = await _userHelpers.AddFileAsync(bookDto.Book, Folder.Book);
+            //book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
             await _unitOfWork.Books.UpdateAsync(book);
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Book);
+                //await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
                 return true;
             }
             return false;

@@ -4,6 +4,7 @@ using LMS.Application.Helpers;
 using LMS.Application.Interfaces;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
+using LMS.Domain.Consts;
 
 namespace LMS.Application.Services
 {
@@ -19,7 +20,8 @@ namespace LMS.Application.Services
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = _mapper.Map<Lecture>(lectureDto);
             if (lectureDto.Lecture != null)
-                lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lecture);
+                lecture.LectureUrl = await _userHelpers.AddFileAsync(lectureDto.Lecture, Folder.Lecture);
+            //lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lecture);
             await _unitOfWork.Lectures.AddAsync(lecture);
             return await _unitOfWork.SaveAsync() > 0;
         }
@@ -35,7 +37,8 @@ namespace LMS.Application.Services
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteVideoAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Lecture);
+                //await _cloudinaryService.DeleteVideoAsync(oldImgPath);
                 return true;
             }
             return false;
@@ -69,13 +72,15 @@ namespace LMS.Application.Services
             var oldImgPath = lecture.LectureUrl;
             if (lectureDto.Lectur != null)
             {
-                lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lectur);
+                lecture.LectureUrl = await _userHelpers.AddFileAsync(lectureDto.Lectur, Folder.Lecture);
+                //lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lectur);
             }
             await _unitOfWork.Lectures.UpdateAsync(lecture);
             if (await _unitOfWork.SaveAsync() > 0)
             {
                 if (oldImgPath != null)
-                    await _cloudinaryService.DeleteVideoAsync(oldImgPath);
+                    await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Lecture);
+                //await _cloudinaryService.DeleteVideoAsync(oldImgPath);
                 return true;
             }
             return false;
