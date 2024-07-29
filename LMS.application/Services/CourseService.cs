@@ -6,6 +6,7 @@ using LMS.Data.Consts;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
 using LMS.Domain.Consts;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Services
 {
@@ -15,26 +16,26 @@ namespace LMS.Application.Services
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
         private readonly CloudinaryService _cloudinaryService = cloudinaryService;
-        public async Task<bool> CreateCourse(CourseDTO courseDto)
+        public async Task<bool> CreateCourse(CourseDTO courseDto, IFormFile img)
         {
             var teacher = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var course = _mapper.Map<Course>(courseDto);
             course.TeacherId = teacher.Id;
-            if (courseDto.CourseImage != null)
-                course.Image = await _userHelpers.AddFileAsync(courseDto.CourseImage, Folder.Image);
+            if (img != null)
+                course.Image = await _userHelpers.AddFileAsync(img, Folder.Image);
             //course.Image = await _cloudinaryService.UploadImageAsync(courseDto.CourseImage);
             await _unitOfWork.Courses.AddAsync(course);
             return await _unitOfWork.SaveAsync() > 0;
         }
-        public async Task<bool> UpdateCourse(string id, CourseDTO courseDTO)
+        public async Task<bool> UpdateCourse(string id, CourseDTO courseDTO, IFormFile img)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var course = await _unitOfWork.Courses.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
             var oldImgPath = course.Image;
             _mapper.Map(courseDTO, course);
-            if (courseDTO.CourseImage != null)
+            if (img != null)
             {
-                course.Image = await _userHelpers.AddFileAsync(courseDTO.CourseImage, Folder.Image);
+                course.Image = await _userHelpers.AddFileAsync(img, Folder.Image);
                 //course.Image = await _cloudinaryService.UploadImageAsync(courseDTO.CourseImage);
             }
             await _unitOfWork.Courses.UpdateAsync(course);

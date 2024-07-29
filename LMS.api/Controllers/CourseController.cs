@@ -14,24 +14,24 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPost]
-        public async Task<IActionResult> CreateCourse(CourseDTO courseDto)
+        public async Task<IActionResult> CreateCourse([FromForm] CourseDTO courseDto, IFormFile CourseImage)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _courseService.CreateCourse(courseDto);
+            var result = await _courseService.CreateCourse(courseDto, CourseImage);
             return result ? Ok("created successfully") : BadRequest("failed to create");
         }
 
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateCourse(string id, CourseDTO courseDto)
+        public async Task<IActionResult> UpdateCourse(string id, CourseDTO courseDto, IFormFile CourseImage)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _courseService.UpdateCourse(id, courseDto);
+            var result = await _courseService.UpdateCourse(id, courseDto, CourseImage);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }

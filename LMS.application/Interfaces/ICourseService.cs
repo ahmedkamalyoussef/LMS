@@ -1,4 +1,5 @@
 ﻿using LMS.Application.DTOs;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Interfaces
 {
@@ -6,8 +7,8 @@ namespace LMS.Application.Interfaces
     {
         public Task<CourseResultDTO> GetCourse(string id);
         public Task<List<CourseResultDTO>> GetAllCourses();
-        public Task<bool> CreateCourse(CourseDTO course);
-        public Task<bool> UpdateCourse(string id, CourseDTO course);
+        public Task<bool> CreateCourse(CourseDTO course, IFormFile file);
+        public Task<bool> UpdateCourse(string id, CourseDTO course, IFormFile file);
         public Task<bool> DeleteCourse(string id);
         public Task<int> GetNumberOfCourses();
         public Task<List<CourseResultDTO>> GetCoursesByTeacherId(string id);

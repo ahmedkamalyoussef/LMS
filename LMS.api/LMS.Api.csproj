@@ -18,8 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
-    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\ahmed0a41468158\" />
   </ItemGroup>
 
   <ItemGroup>
