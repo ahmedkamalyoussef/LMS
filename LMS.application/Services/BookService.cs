@@ -5,6 +5,7 @@ using LMS.Application.Interfaces;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
 using LMS.Domain.Consts;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Services
 {
@@ -15,12 +16,12 @@ namespace LMS.Application.Services
         private readonly IUserHelpers _userHelpers = userHelpers;
         private readonly CloudinaryService _cloudinaryService = cloudinaryService;
 
-        public async Task<bool> CreateBook(BookDTO bookDto)
+        public async Task<bool> CreateBook(BookDTO bookDto, IFormFile file)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = _mapper.Map<Book>(bookDto);
-            if (bookDto.Book != null)
-                book.BookUrl = await _userHelpers.AddFileAsync(bookDto.Book, Folder.Book);
+            if (file != null)
+                book.BookUrl = await _userHelpers.AddFileAsync(file, Folder.Book);
             //book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
             await _unitOfWork.Books.AddAsync(book);
             return await _unitOfWork.SaveAsync() > 0;
@@ -62,14 +63,14 @@ namespace LMS.Application.Services
             return books.Count();
         }
 
-        public async Task<bool> UpdateBook(string id, EditBookDTO bookDto)
+        public async Task<bool> UpdateBook(string id, EditBookDTO bookDto, IFormFile file)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
             _mapper.Map(bookDto, book);
             var oldImgPath = book.BookUrl;
-            if (bookDto.Book != null)
-                book.BookUrl = await _userHelpers.AddFileAsync(bookDto.Book, Folder.Book);
+            if (file != null)
+                book.BookUrl = await _userHelpers.AddFileAsync(file, Folder.Book);
             //book.BookUrl = await _cloudinaryService.UploadFileAsync(bookDto.Book);
             await _unitOfWork.Books.UpdateAsync(book);
             if (await _unitOfWork.SaveAsync() > 0)

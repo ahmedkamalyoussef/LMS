@@ -5,6 +5,7 @@ using LMS.Application.Interfaces;
 using LMS.Data.Entities;
 using LMS.Data.IGenericRepository_IUOW;
 using LMS.Domain.Consts;
+using Microsoft.AspNetCore.Http;
 
 namespace LMS.Application.Services
 {
@@ -15,12 +16,12 @@ namespace LMS.Application.Services
         private readonly IUserHelpers _userHelpers = userHelpers;
         private readonly CloudinaryService _cloudinaryService = cloudinaryService;
 
-        public async Task<bool> CreateLecture(LectureDTO lectureDto)
+        public async Task<bool> CreateLecture(LectureDTO lectureDto, IFormFile file)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = _mapper.Map<Lecture>(lectureDto);
-            if (lectureDto.Lecture != null)
-                lecture.LectureUrl = await _userHelpers.AddFileAsync(lectureDto.Lecture, Folder.Lecture);
+            if (file != null)
+                lecture.LectureUrl = await _userHelpers.AddFileAsync(file, Folder.Lecture);
             //lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lecture);
             await _unitOfWork.Lectures.AddAsync(lecture);
             return await _unitOfWork.SaveAsync() > 0;
@@ -64,15 +65,15 @@ namespace LMS.Application.Services
             return lectures.Count();
         }
 
-        public async Task<bool> UpdateLecture(string id, EditLectureDTO lectureDto)
+        public async Task<bool> UpdateLecture(string id, EditLectureDTO lectureDto, IFormFile file)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
             _mapper.Map(lectureDto, lecture);
             var oldImgPath = lecture.LectureUrl;
-            if (lectureDto.Lectur != null)
+            if (file != null)
             {
-                lecture.LectureUrl = await _userHelpers.AddFileAsync(lectureDto.Lectur, Folder.Lecture);
+                lecture.LectureUrl = await _userHelpers.AddFileAsync(file, Folder.Lecture);
                 //lecture.LectureUrl = await _cloudinaryService.UploadVideoAsync(lectureDto.Lectur);
             }
             await _unitOfWork.Lectures.UpdateAsync(lecture);

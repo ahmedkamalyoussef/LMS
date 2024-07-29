@@ -14,24 +14,24 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPost]
-        public async Task<IActionResult> CreateBook(BookDTO bookDto)
+        public async Task<IActionResult> CreateBook(BookDTO bookDto, IFormFile Book)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _bookService.CreateBook(bookDto);
+            var result = await _bookService.CreateBook(bookDto, Book);
             return result ? Ok("Created successfully") : BadRequest("Failed to create");
         }
 
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateBook(string id, EditBookDTO bookDto)
+        public async Task<IActionResult> UpdateBook(string id, EditBookDTO bookDto, IFormFile Book)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _bookService.UpdateBook(id, bookDto);
+            var result = await _bookService.UpdateBook(id, bookDto, Book);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }
