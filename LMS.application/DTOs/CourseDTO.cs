@@ -1,7 +1,11 @@
-﻿namespace LMS.Application.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LMS.Application.DTOs
 {
     public class CourseDTO
     {
+        [Required]
+        public string Id { get; set; }
         public string Name { get; set; }
         public string? MaterialName { get; set; }
 

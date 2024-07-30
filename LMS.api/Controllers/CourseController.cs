@@ -26,12 +26,12 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateCourse(string id, CourseDTO courseDto, IFormFile CourseImage)
+        public async Task<IActionResult> UpdateCourse([FromForm] CourseDTO courseDto, IFormFile CourseImage)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _courseService.UpdateCourse(id, courseDto, CourseImage);
+            var result = await _courseService.UpdateCourse(courseDto.Id, courseDto, CourseImage);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }

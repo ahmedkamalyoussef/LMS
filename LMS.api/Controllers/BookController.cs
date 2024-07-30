@@ -14,7 +14,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPost]
-        public async Task<IActionResult> CreateBook(BookDTO bookDto, IFormFile Book)
+        public async Task<IActionResult> CreateBook([FromForm] BookDTO bookDto, IFormFile Book)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -23,15 +23,14 @@ namespace LMS.Api.Controllers
             return result ? Ok("Created successfully") : BadRequest("Failed to create");
         }
 
-
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateBook(string id, EditBookDTO bookDto, IFormFile Book)
+        public async Task<IActionResult> UpdateBook([FromForm] EditBookDTO bookDTO, IFormFile book)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _bookService.UpdateBook(id, bookDto, Book);
+            var result = await _bookService.UpdateBook(bookDTO.Id, bookDTO, book);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
 
         }
