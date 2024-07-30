@@ -26,7 +26,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateCourse([FromForm] CourseDTO courseDto, IFormFile CourseImage)
+        public async Task<IActionResult> UpdateCourse([FromForm] EditCourseDTO courseDto, IFormFile CourseImage)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
