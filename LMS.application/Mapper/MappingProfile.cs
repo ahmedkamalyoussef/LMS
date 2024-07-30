@@ -26,8 +26,9 @@ namespace LMS.Application.Mapper
 
             #region Course
             CreateMap<CourseDTO, Course>();
+            CreateMap<EditCourseDTO, Course>();
             CreateMap<Course, CourseResultDTO>();
-                //.ForMember(dest => dest.Evaluation, opt => opt.MapFrom(src => CalculateAverageRate(src)));
+            //.ForMember(dest => dest.Evaluation, opt => opt.MapFrom(src => CalculateAverageRate(src)));
             #endregion
 
             #region Book
@@ -65,6 +66,6 @@ namespace LMS.Application.Mapper
             #endregion
         }
 
-        
+
     }
 }

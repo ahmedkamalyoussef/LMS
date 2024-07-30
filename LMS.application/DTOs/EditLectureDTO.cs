@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LMS.Application.DTOs
 {
@@ -8,6 +7,6 @@ namespace LMS.Application.DTOs
         [Required]
         public string Id { get; set; }
         public string Name { get; set; }
-        public IFormFile Lectur { get; set; }
+        //public IFormFile Lectur { get; set; }
     }
 }
