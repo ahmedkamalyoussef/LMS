@@ -87,7 +87,6 @@ namespace LMS.Api.Controllers
         }
 
 
-        [Authorize]
         [HttpGet("count")]
         public async Task<IActionResult> GetNumberOfCourses()
         {
