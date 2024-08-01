@@ -68,7 +68,7 @@ namespace LMS.Api.Controllers
         public async Task<IActionResult> GetnumberOfLecturesInCourse(string courseId)
         {
             var courses = await _lectureService.GetNumberOfLecturesInCourse(courseId);
-            return Ok(courses)
+            return Ok(courses);
         }
     }
 }
