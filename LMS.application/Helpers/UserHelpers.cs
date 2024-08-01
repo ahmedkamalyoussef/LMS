@@ -22,8 +22,6 @@ namespace LMS.Application.Helpers
         private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
 
         #endregion
-        #region ctor
-        #endregion
 
         #region methods
         public async Task<ApplicationUser> GetCurrentUserAsync()
