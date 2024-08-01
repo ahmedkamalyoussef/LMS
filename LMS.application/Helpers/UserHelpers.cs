@@ -112,7 +112,7 @@ namespace LMS.Application.Helpers
                 await file.CopyToAsync(fileStream);
             }
 
-            // Return the absolute path of the saved file
+            // Return the absolute path 
             return filePath;
         }
 
