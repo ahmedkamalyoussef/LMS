@@ -33,7 +33,6 @@ namespace LMS.Api.Controllers
 
             var result = await _courseService.UpdateCourse(courseDto.Id, courseDto, CourseImage);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
-
         }
 
 
@@ -43,7 +42,6 @@ namespace LMS.Api.Controllers
         {
             var result = await _courseService.DeleteCourse(id);
             return result ? Ok("deleted successfully") : BadRequest("failed to delete");
-
         }
 
 
@@ -53,7 +51,6 @@ namespace LMS.Api.Controllers
         {
             var result = await _courseService.EnrollingStudentInCourse(studentEmail, courseCode);
             return result ? Ok("student has been added successfully") : BadRequest("failed to add student");
-
         }
 
 

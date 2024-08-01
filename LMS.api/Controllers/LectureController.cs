@@ -34,7 +34,6 @@ namespace LMS.Api.Controllers
 
             var result = await _lectureService.UpdateLecture(lectureDto.Id, lectureDto, Lecture);
             return result ? Ok("updated successfully") : BadRequest("failed to update");
-
         }
 
 
