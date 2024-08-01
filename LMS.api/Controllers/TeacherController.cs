@@ -11,7 +11,6 @@ namespace LMS.Api.Controllers
     {
         private readonly ITeacherService _teacherService = teacherService;
 
-        [Authorize]
         [HttpGet("count")]
         public async Task<IActionResult> GetTeachersCount()
         {
