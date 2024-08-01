@@ -1,5 +1,4 @@
 ﻿using LMS.Application.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.Api.Controllers
@@ -11,7 +10,6 @@ namespace LMS.Api.Controllers
         private readonly IStudentService _studentService = studentService;
 
 
-        [Authorize]
         [HttpGet("count")]
         public async Task<IActionResult> GetStudentCount()
         {
