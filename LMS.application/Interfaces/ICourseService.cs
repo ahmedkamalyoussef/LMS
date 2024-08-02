@@ -8,7 +8,7 @@ namespace LMS.Application.Interfaces
         public Task<CourseResultDTO> GetCourse(string id);
         public Task<List<CourseResultDTO>> GetAllCourses();
         public Task<bool> CreateCourse(CourseDTO course, IFormFile file);
-        public Task<bool> UpdateCourse(string id, EditCourseDTO course, IFormFile file);
+        public Task<bool> UpdateCourse(string id, EditCourseDTO course, IFormFile? file);
         public Task<bool> DeleteCourse(string id);
         public Task<int> GetNumberOfCourses();
         public Task<List<CourseResultDTO>> GetCoursesByTeacherId(string id);

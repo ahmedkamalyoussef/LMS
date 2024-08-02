@@ -63,7 +63,7 @@ namespace LMS.Application.Services
             return books.Count();
         }
 
-        public async Task<bool> UpdateBook(string id, EditBookDTO bookDto, IFormFile file)
+        public async Task<bool> UpdateBook(string id, EditBookDTO bookDto, IFormFile? file)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var book = await _unitOfWork.Books.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
@@ -75,7 +75,7 @@ namespace LMS.Application.Services
             await _unitOfWork.Books.UpdateAsync(book);
             if (await _unitOfWork.SaveAsync() > 0)
             {
-                if (oldImgPath != null)
+                if (oldImgPath != null && file != null)
                     await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Book);
                 //await _cloudinaryService.DeleteRawFileAsync(oldImgPath);
                 return true;

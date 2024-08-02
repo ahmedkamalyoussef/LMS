@@ -27,7 +27,7 @@ namespace LMS.Application.Services
             await _unitOfWork.Courses.AddAsync(course);
             return await _unitOfWork.SaveAsync() > 0;
         }
-        public async Task<bool> UpdateCourse(string id, EditCourseDTO courseDTO, IFormFile img)
+        public async Task<bool> UpdateCourse(string id, EditCourseDTO courseDTO, IFormFile? img)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var course = await _unitOfWork.Courses.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
@@ -41,7 +41,7 @@ namespace LMS.Application.Services
             await _unitOfWork.Courses.UpdateAsync(course);
             if (await _unitOfWork.SaveAsync() > 0)
             {
-                if (oldImgPath != null)
+                if (oldImgPath != null && img != null)
                     await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Image);
                 //await _cloudinaryService.DeleteImageAsync(oldImgPath);
                 return true;

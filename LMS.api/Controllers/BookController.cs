@@ -25,7 +25,7 @@ namespace LMS.Api.Controllers
 
         [Authorize(Roles = ConstRoles.Teacher)]
         [HttpPut]
-        public async Task<IActionResult> UpdateBook([FromForm] EditBookDTO bookDTO, IFormFile book)
+        public async Task<IActionResult> UpdateBook([FromForm] EditBookDTO bookDTO, IFormFile? book)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

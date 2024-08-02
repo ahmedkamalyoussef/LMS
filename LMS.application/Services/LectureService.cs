@@ -65,7 +65,7 @@ namespace LMS.Application.Services
             return lectures.Count();
         }
 
-        public async Task<bool> UpdateLecture(string id, EditLectureDTO lectureDto, IFormFile file)
+        public async Task<bool> UpdateLecture(string id, EditLectureDTO lectureDto, IFormFile? file)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var lecture = await _unitOfWork.Lectures.FindFirstAsync(c => c.Id == id) ?? throw new Exception("course not found");
@@ -79,7 +79,7 @@ namespace LMS.Application.Services
             await _unitOfWork.Lectures.UpdateAsync(lecture);
             if (await _unitOfWork.SaveAsync() > 0)
             {
-                if (oldImgPath != null)
+                if (oldImgPath != null && file != null)
                     await _userHelpers.DeleteFileAsync(oldImgPath, Folder.Lecture);
                 //await _cloudinaryService.DeleteVideoAsync(oldImgPath);
                 return true;
