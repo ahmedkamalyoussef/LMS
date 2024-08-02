@@ -58,33 +58,6 @@ namespace LMS.Application.Helpers
         #endregion
 
         #region file handling
-        //public async Task<string> AddFileAsync(IFormFile file, Folder folder)
-        //{
-        //    if (file == null || file.Length == 0)
-        //    {
-        //        return string.Empty;
-        //    }
-
-        //    string rootPath = _webHostEnvironment.WebRootPath;
-        //    var user = await GetCurrentUserAsync() ?? throw new("user not found");
-        //    string userName = user.UserName;
-
-        //    string profileFolderPath = Path.Combine(rootPath, userName, folder.ToString());
-        //    if (!Directory.Exists(profileFolderPath))
-        //    {
-        //        Directory.CreateDirectory(profileFolderPath);
-        //    }
-
-        //    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-        //    string filePath = Path.Combine(profileFolderPath, fileName);
-
-        //    using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await file.CopyToAsync(fileStream);
-        //    }
-        //    return $"/{userName}/{folder}/{fileName}";
-        //}
-
         public async Task<string> AddFileAsync(IFormFile file, Folder folder)
         {
             if (file == null || file.Length == 0)
@@ -109,9 +82,7 @@ namespace LMS.Application.Helpers
             {
                 await file.CopyToAsync(fileStream);
             }
-
-            // Return the absolute path 
-            return filePath;
+            return $"/{userName}/{folder}/{fileName}";
         }
 
         public async Task<bool> DeleteFileAsync(string filePath, Folder folder)
@@ -125,10 +96,10 @@ namespace LMS.Application.Helpers
             var user = await GetCurrentUserAsync();
             string userName = user.UserName;
 
-            //if (!filePath.StartsWith($"/{userName}/{folder}/"))
-            //{
-            //    throw new ArgumentException("Invalid file path.", nameof(filePath));
-            //}
+            if (!filePath.StartsWith($"/{userName}/{folder}/"))
+            {
+                throw new ArgumentException("Invalid file path.", nameof(filePath));
+            }
 
             string fullFilePath = Path.Combine(rootPath, filePath.TrimStart('/'));
 

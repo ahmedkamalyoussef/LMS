@@ -8,6 +8,7 @@ namespace LMS.Application.Extentions
         public static void UseCustomMiddlewares(this WebApplication app)
         {
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthentication();
 
