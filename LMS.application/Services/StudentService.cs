@@ -12,5 +12,9 @@ namespace LMS.Application.Services
         {
             return await _unitOfWork.Students.CountAsync();
         }
+        public async Task<int> EnrolledStudentsCount()
+        {
+            return await _unitOfWork.StudentCourses.CountAsync();
+        }
     }
 }

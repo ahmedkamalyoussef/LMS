@@ -11,9 +11,15 @@ namespace LMS.Api.Controllers
 
 
         [HttpGet("count")]
-        public async Task<IActionResult> GetStudentCount()
+        public async Task<IActionResult> GetStudentsCount()
         {
             var count = await _studentService.GetStudentsCount();
+            return Ok(count);
+        }
+        [HttpGet("enrolled-count")]
+        public async Task<IActionResult> GetEnrolledStudentsCount()
+        {
+            var count = await _studentService.EnrolledStudentsCount();
             return Ok(count);
         }
     }
