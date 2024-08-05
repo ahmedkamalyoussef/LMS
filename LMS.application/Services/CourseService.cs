@@ -74,8 +74,7 @@ namespace LMS.Application.Services
             var currentUser = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var student = await _unitOfWork.Students.FindFirstAsync(s => s.Email == StudentEmail) ?? throw new Exception("student not found");
             var course = await _unitOfWork.Courses.FindFirstAsync(c => c.Code == courseCode) ?? throw new Exception("course not found");
-            if (currentUser.Id != course.TeacherId)
-                throw new Exception("course not found");
+
             var newStudentCourse = new StudentCourse { CourseId = course.Id, StudentId = student.Id };
             await _unitOfWork.StudentCourses.AddAsync(newStudentCourse);
             return await _unitOfWork.SaveAsync() > 0;

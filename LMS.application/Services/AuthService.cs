@@ -52,6 +52,8 @@ namespace LMS.Application.Services
             {
                 AccountType.Student => _mapper.Map<Student>(registerUser),
                 AccountType.Teacher => _mapper.Map<Teacher>(registerUser),
+                AccountType.Admin => _mapper.Map<Admin>(registerUser),
+
             };
 
             if (user == null)
@@ -77,10 +79,6 @@ namespace LMS.Application.Services
 
             return result;
         }
-
-
-
-
         #endregion
 
         #region login

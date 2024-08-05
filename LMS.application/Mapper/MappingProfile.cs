@@ -16,6 +16,8 @@ namespace LMS.Application.Mapper
                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User));
             CreateMap<RegisterUser, Student>()
                    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User));
+            CreateMap<RegisterUser, Admin>()
+                   .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => new MailAddress(src.Email).User));
             #endregion
 
             #region Teacher & student

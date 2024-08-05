@@ -38,12 +38,12 @@ namespace LMS.Infrastructure.GenericRepository_UOW
 
             return await query.ToListAsync();
         }
-        public async Task<IEnumerable<T>> FilterAsync(int pageSize, int pageIndex,List< Expression<Func<T, bool>>> expressions,  Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
+        public async Task<IEnumerable<T>> FilterAsync(int pageSize, int pageIndex, List<Expression<Func<T, bool>>> expressions, Expression<Func<T, object>> orderBy = null, string direction = null, List<Expression<Func<T, object>>> includes = null)
         {
             IQueryable<T> query = _context.Set<T>().AsNoTracking();
             foreach (var expression in expressions)
             {
-                query=query.Where(expression);
+                query = query.Where(expression);
             }
 
             if (orderBy != null)
@@ -53,7 +53,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
                 else
                     query = query.OrderBy(orderBy);
             }
-            query = query.Skip((pageIndex - 1) *pageSize).Take( pageSize);
+            query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
             if (includes != null)
                 foreach (var include in includes)
@@ -114,7 +114,7 @@ namespace LMS.Infrastructure.GenericRepository_UOW
 
         public async Task<int> CountAsync()
         {
-            return await _context.Set<T>().AsNoTracking().CountAsync();
+            return await _context.Set<T>().CountAsync();
         }
     }
 }
