@@ -14,12 +14,14 @@ namespace LMS.Application.Services
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
 
-        public async Task<bool> CreateExam(ExamDTO examDTO)
+        public async Task<Tuple<bool, string>> CreateExam(ExamDTO examDTO)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var exam = _mapper.Map<Exam>(examDTO);
             await _unitOfWork.Exams.AddAsync(exam);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+                return Tuple.Create(true, exam.Id);
+            return Tuple.Create(false, "failed to create");
         }
 
         public async Task<bool> DeleteExam(string id)
@@ -35,9 +37,9 @@ namespace LMS.Application.Services
             var currentStudent = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var exams = await _unitOfWork.Exams.FindAsync(b => b.CourseId == courseId, orderBy: b => b.Name);
             var examsResult = _mapper.Map<IEnumerable<ExamResultDTO>>(exams).ToList();
-            foreach(var exam in examsResult)
+            foreach (var exam in examsResult)
             {
-                var exResult=await _unitOfWork.ExamResults.FindFirstAsync(ex=>ex.ExamId== exam.Id && ex.StudentId==currentStudent.Id);
+                var exResult = await _unitOfWork.ExamResults.FindFirstAsync(ex => ex.ExamId == exam.Id && ex.StudentId == currentStudent.Id);
                 if (exResult != null)
                     exam.IsExamined = true;
                 else exam.IsExamined = false;
@@ -49,9 +51,9 @@ namespace LMS.Application.Services
         {
             var currentStudent = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var exam = await _unitOfWork.Exams.FindFirstAsync(c => c.Id == id) ?? throw new Exception("exam not found");
-            var examResult =await _unitOfWork.ExamResults.FindFirstAsync(ex=>ex.ExamId == id && ex.StudentId==currentStudent.Id);
+            var examResult = await _unitOfWork.ExamResults.FindFirstAsync(ex => ex.ExamId == id && ex.StudentId == currentStudent.Id);
             var result = _mapper.Map<ExamResultDTO>(exam);
-            if(examResult != null)
+            if (examResult != null)
                 result.IsExamined = true;
             else result.IsExamined = false;
             return result;
@@ -61,7 +63,7 @@ namespace LMS.Application.Services
         {
             var currentStudent = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var exam = await _unitOfWork.Exams.FindFirstAsync(c => c.Id == examId) ?? throw new Exception("exam not found");
-            var examResult = await _unitOfWork.ExamResults.FindFirstAsync(c => c.ExamId == examId&&c.StudentId==currentStudent.Id) ?? throw new Exception("exam result not found");
+            var examResult = await _unitOfWork.ExamResults.FindFirstAsync(c => c.ExamId == examId && c.StudentId == currentStudent.Id) ?? throw new Exception("exam result not found");
             return examResult.Result;
         }
 
