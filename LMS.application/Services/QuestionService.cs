@@ -13,12 +13,14 @@ namespace LMS.Application.Services
         private readonly IMapper _mapper = mapper;
         private readonly IUserHelpers _userHelpers = userHelpers;
 
-        public async Task<bool> CreateQuestion(QuestionDTO questionDto)
+        public async Task<Tuple<bool, string>> CreateQuestion(QuestionDTO questionDto)
         {
             _ = await _userHelpers.GetCurrentUserAsync() ?? throw new Exception("user not found");
             var question = _mapper.Map<Question>(questionDto);
             await _unitOfWork.Questions.AddAsync(question);
-            return await _unitOfWork.SaveAsync() > 0;
+            if (await _unitOfWork.SaveAsync() > 0)
+                return Tuple.Create(true, question.Id);
+            return Tuple.Create(false, "failed to create");
         }
 
         public async Task<bool> DeleteQuestion(string id)
@@ -31,7 +33,7 @@ namespace LMS.Application.Services
 
         public async Task<List<QuestionResultDTO>> GetExamQuestions(string examId)
         {
-            var questions = await _unitOfWork.Questions.FindAsync(b => b.ExamId == examId, null, null, includes: [q=>q.Answers]);
+            var questions = await _unitOfWork.Questions.FindAsync(b => b.ExamId == examId, null, null, includes: [q => q.Answers]);
             var questionsResult = _mapper.Map<IEnumerable<QuestionResultDTO>>(questions).ToList();
             return questionsResult;
         }

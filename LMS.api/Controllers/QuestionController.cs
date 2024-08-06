@@ -21,7 +21,7 @@ namespace LMS.Api.Controllers
                 return BadRequest(ModelState);
 
             var result = await _questionService.CreateQuestion(questionDto);
-            return result ? Ok("Created successfully") : BadRequest("Failed to create");
+            return result.Item1 ? Ok(result.Item2) : BadRequest("Failed to create");
         }
 
 
